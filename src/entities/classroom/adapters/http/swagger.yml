@@ -1,0 +1,95 @@
+paths:
+  /classroom/:
+    post:
+      summary: Create classroom
+      tags:
+        - Classrooms
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                teacherId:
+                  type: string
+                cod:
+                  type: string
+            examples:
+              Credentials exmaple:
+                value:
+                  teacherId: myTeacherId
+                  cod: myCod
+      responses:
+        200:
+          description: Ok
+
+  /classroom/{teacherId}/{cod}:
+    get:
+      summary: Get by conditions
+      tags:
+        - Classrooms
+      parameters:
+        - name: teacherId
+          in: path
+          required: true
+          example: myTeacherId
+        - name: cod
+          in: path
+          required: true
+          example: myCod
+      responses:
+        200:
+          description: Ok
+  /classroom/nStudents/{classRoomId}:
+    put:
+      summary: Update number of students
+      tags:
+        - Classrooms
+      parameters:
+        - name: classRoomId
+          in: path
+          required: true
+          example: 1
+      requestBody:
+        description: Number of students
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nStudents:
+                  type: integer
+            examples:
+              Credentials exmaple:
+                value:
+                  nStudents: 4
+      responses:
+        200:
+          description: Ok
+  /classroom/studentSuscribeOrLogInClassroom:
+    put:
+      summary: Student Suscribe or Log In Classroom
+      tags:
+        - Classrooms
+      requestBody:
+        description: Number of students
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                cod:
+                  type: string
+                teacherId:
+                  type: string
+                studentId:
+                  type: string
+            examples:
+              Credentials exmaple:
+                value:
+                  cod: yy
+                  teacherId: yy
+                  studentId: ioio
+      responses:
+        200:
+          description: Ok

@@ -1,0 +1,87 @@
+paths:
+  /user/getStudentsFromTeacherAndCod:
+    post:
+      summary: Get Students from teacherId and Cod
+      tags:
+        - Users
+      requestBody:
+        description: User data
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                teacherId:
+                  type: string
+                cod:
+                  type: string
+            examples:
+              Credentials exmaple:
+                value:
+                  teacherId: yy
+                  cod: yy
+      responses:
+        200:
+          description: Ok
+#  /student/{id}:
+#    delete:
+#      summary: Delete student by id
+#      tags:
+#        - Users
+#      parameters:
+#        - name: id
+#          in: path
+#          required: true
+#      responses:
+#        200:
+#          description: Ok
+#    get:
+#      summary: Get student by id
+#      tags:
+#        - Users
+#      parameters:
+#        - name: id
+#          in: path
+#          required: true
+#          examples:
+#            a:
+#              value: 1
+#      responses:
+#        200:
+#          description: Ok
+#    put:
+#      summary: Update
+#      tags:
+#        - Users
+#      parameters:
+#        - name: id
+#          in: path
+#          required: true
+#          examples:
+#            a:
+#              value: 1
+#      requestBody:
+#        description: User data
+#        content:
+#          application/json:
+#            schema:
+#              type: object
+#              properties:
+#                student:
+#                  type: object
+#                  properties:
+#                    mail:
+#                      type: string
+#                    username:
+#                      type: string
+#                    password:
+#                      type: string
+#            examples:
+#              Credentials exmaple:
+#                value:
+#                  mail: aa@aa.com
+#                  username: Paco
+#                  password: 456
+#      responses:
+#        200:
+#          description: Ok
