@@ -1,7 +1,7 @@
 
 export const config = {
     cors: {
-        origin: "http://localhost:8080",
+        origin: "*",
         methods: ["GET", "POST"],
         credentials: true
     },

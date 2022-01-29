@@ -76,7 +76,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 var config = {
   cors: {
-    origin: "http://localhost:8080",
+    origin: "*",
     methods: ["GET", "POST"],
     credentials: true
   },
@@ -181,26 +181,29 @@ var setAssociations = function setAssociations(db) {
             return db.authenticate();
 
           case 5:
-            db.sync({
+            _context.next = 7;
+            return db.sync({
               force: forceCleanDatabase
             });
+
+          case 7:
             onConnect();
             console.log('Database connection OK!');
-            _context.next = 14;
+            _context.next = 15;
             break;
 
-          case 10:
-            _context.prev = 10;
+          case 11:
+            _context.prev = 11;
             _context.t0 = _context["catch"](0);
             console.log(_context.t0);
             console.log('Unable to connect to the database:');
 
-          case 14:
+          case 15:
           case "end":
             return _context.stop();
         }
       }
-    }, _callee, null, [[0, 10]]);
+    }, _callee, null, [[0, 11]]);
   }));
 
   return function (_x) {
@@ -298,20 +301,7 @@ var Middlewares = function Middlewares(app, io) {
   }));
   app.use(express__WEBPACK_IMPORTED_MODULE_0___default().json());
   app.use((0,_with_sockets__WEBPACK_IMPORTED_MODULE_2__["default"])(io));
-  app.use(cors__WEBPACK_IMPORTED_MODULE_1___default()()); // Use this after the variable declaration
-
-  app.use(function (req, res, next) {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    res.header('Access-Control-Allow-Credentials', true);
-    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
-
-    if (req.method === 'OPTIONS') {
-      res.end();
-    } else {
-      next();
-    }
-  });
+  app.use(cors__WEBPACK_IMPORTED_MODULE_1___default()());
 };
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Middlewares);
@@ -649,21 +639,6 @@ __webpack_require__.r(__webpack_exports__);
 
 
 var Controller = {
-  get: function get(conditions) {
-    return _model__WEBPACK_IMPORTED_MODULE_0__["default"].get(conditions);
-  },
-  getById: function getById(id) {
-    return _model__WEBPACK_IMPORTED_MODULE_0__["default"].getById(id);
-  },
-  create: function create(data) {
-    return _model__WEBPACK_IMPORTED_MODULE_0__["default"].create(data);
-  },
-  updateById: function updateById(id, data) {
-    return _model__WEBPACK_IMPORTED_MODULE_0__["default"].updateById(id, data);
-  },
-  deleteById: function deleteById(id) {
-    return _model__WEBPACK_IMPORTED_MODULE_0__["default"].deleteById(id);
-  },
   login: function login(token, isTeacher) {
     return (0,_service__WEBPACK_IMPORTED_MODULE_1__["default"])().signIn(token, isTeacher);
   }
