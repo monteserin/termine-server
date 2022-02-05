@@ -43,6 +43,12 @@ const Controller = {
         return await ClassroomController.getClassroomWithStudents(msg.cod, msg.teacherId);
     },
 
+    async removeStudentFromClassroom(studentId, classroomId, cod, teacherId) {
+        console.log('sssssssstudentId' , studentId, classroomId)
+        await ClassroomStudentModel.deleteByConditions({ studentId, classroomId})
+        return await ClassroomController.getClassroomWithStudents(cod, teacherId);
+    },
+
     async getStudentClassroomAndSuscribeToItIfIsNotSuscribed(msg) {
         const [classroom] = await ClassroomModel.get({teacherId: msg.teacherId, cod: msg.cod});
         if (classroom) {
@@ -52,7 +58,10 @@ const Controller = {
                 picture: msg.picture,
                 name: msg.name
             });
-            ClassroomStudentModel.create({studentId: student.id, classroomId: classroom.id});
+            await ClassroomStudentModel.findOrCreate({studentId: student.id, classroomId: classroom.id}, {
+                studentId: student.id,
+                classroomId: classroom.id
+            });
             return classroom;
         } else {
             return null;

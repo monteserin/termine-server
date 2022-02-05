@@ -6,6 +6,8 @@ import ClassroomStudent from "../../classroom-student/model/schema";
 const Model = {
     ...GenericModel(Schema),
     getClassroomWithStudents(conditions){
+        console.log('getClassroomWithStudents');
+
         return Schema.findOne({where:conditions,include: Student});
     }
 };

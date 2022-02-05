@@ -22,7 +22,7 @@ const Controller = {
         return classroom;
     },
     async createIfNotExistsAndGetClassroom(teacherId, cod) {
-        let data = await this.getClassroomWithStudents(teacherId, cod);
+        const data = await this.getClassroomWithStudents(teacherId, cod);
         if (!data) {
             await Model.create({teacherId, cod});
             return await this.getClassroomWithStudents(teacherId, cod);

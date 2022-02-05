@@ -454,6 +454,13 @@ var GenericModel = function GenericModel(Model) {
         }
       });
     },
+    deleteByConditions: function deleteByConditions(conditions) {
+      console.log('111111111111111111111111111111111');
+      console.log(conditions);
+      return Model.destroy({
+        where: conditions
+      });
+    },
     findOrCreate: function findOrCreate(condition, newObj) {
       return Model.findOrCreate({
         where: condition,
@@ -640,6 +647,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var Controller = {
   login: function login(token, isTeacher) {
+    console.log('ññññññññññññññññññññññññññ');
     return (0,_service__WEBPACK_IMPORTED_MODULE_1__["default"])().signIn(token, isTeacher);
   }
 };
@@ -1323,6 +1331,7 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 
 var Model = _objectSpread(_objectSpread({}, (0,_Application_repository_generic_model__WEBPACK_IMPORTED_MODULE_2__["default"])(_schema__WEBPACK_IMPORTED_MODULE_1__["default"])), {}, {
   getClassroomWithStudents: function getClassroomWithStudents(conditions) {
+    console.log('getClassroomWithStudents');
     return _schema__WEBPACK_IMPORTED_MODULE_1__["default"].findOne({
       where: conditions,
       include: _student_model_schema__WEBPACK_IMPORTED_MODULE_3__["default"]
@@ -1474,21 +1483,27 @@ router.post("/", (0,_Middlwares_error_handler__WEBPACK_IMPORTED_MODULE_4__.async
     return _ref.apply(this, arguments);
   };
 }()));
-router.post("/hasTerminated", (0,_Middlwares_error_handler__WEBPACK_IMPORTED_MODULE_4__.asyncHandler)( /*#__PURE__*/function () {
+router.post("/removeFromClassroom", (0,_Middlwares_error_handler__WEBPACK_IMPORTED_MODULE_4__.asyncHandler)( /*#__PURE__*/function () {
   var _ref2 = _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_0___default()( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default().mark(function _callee2(req, res) {
-    var updatedClassroom;
+    var _req$body2, studentId, classroomId, updatedClassroom;
+
     return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default().wrap(function _callee2$(_context2) {
       while (1) {
         switch (_context2.prev = _context2.next) {
           case 0:
-            _context2.next = 2;
+            _req$body2 = req.body, studentId = _req$body2.studentId, classroomId = _req$body2.classroomId;
+            _context2.next = 3;
+            return _controller__WEBPACK_IMPORTED_MODULE_3__["default"].removeStudentFromClassroom(studentId, classroomId);
+
+          case 3:
+            _context2.next = 5;
             return _controller__WEBPACK_IMPORTED_MODULE_3__["default"].studentHasTerminated(req.body);
 
-          case 2:
+          case 5:
             updatedClassroom = _context2.sent;
             req.io.emit('classroomUpdated', updatedClassroom);
 
-          case 4:
+          case 7:
           case "end":
             return _context2.stop();
         }
@@ -1500,7 +1515,7 @@ router.post("/hasTerminated", (0,_Middlwares_error_handler__WEBPACK_IMPORTED_MOD
     return _ref2.apply(this, arguments);
   };
 }()));
-router.post("/hasDoubts", (0,_Middlwares_error_handler__WEBPACK_IMPORTED_MODULE_4__.asyncHandler)( /*#__PURE__*/function () {
+router.post("/hasTerminated", (0,_Middlwares_error_handler__WEBPACK_IMPORTED_MODULE_4__.asyncHandler)( /*#__PURE__*/function () {
   var _ref3 = _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_0___default()( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default().mark(function _callee3(req, res) {
     var updatedClassroom;
     return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default().wrap(function _callee3$(_context3) {
@@ -1508,7 +1523,7 @@ router.post("/hasDoubts", (0,_Middlwares_error_handler__WEBPACK_IMPORTED_MODULE_
         switch (_context3.prev = _context3.next) {
           case 0:
             _context3.next = 2;
-            return _controller__WEBPACK_IMPORTED_MODULE_3__["default"].studentHasDoubts(req.body);
+            return _controller__WEBPACK_IMPORTED_MODULE_3__["default"].studentHasTerminated(req.body);
 
           case 2:
             updatedClassroom = _context3.sent;
@@ -1526,7 +1541,7 @@ router.post("/hasDoubts", (0,_Middlwares_error_handler__WEBPACK_IMPORTED_MODULE_
     return _ref3.apply(this, arguments);
   };
 }()));
-router.post("/isInClassroom", (0,_Middlwares_error_handler__WEBPACK_IMPORTED_MODULE_4__.asyncHandler)( /*#__PURE__*/function () {
+router.post("/hasDoubts", (0,_Middlwares_error_handler__WEBPACK_IMPORTED_MODULE_4__.asyncHandler)( /*#__PURE__*/function () {
   var _ref4 = _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_0___default()( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default().mark(function _callee4(req, res) {
     var updatedClassroom;
     return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default().wrap(function _callee4$(_context4) {
@@ -1534,7 +1549,7 @@ router.post("/isInClassroom", (0,_Middlwares_error_handler__WEBPACK_IMPORTED_MOD
         switch (_context4.prev = _context4.next) {
           case 0:
             _context4.next = 2;
-            return _controller__WEBPACK_IMPORTED_MODULE_3__["default"].studentIsInClassroom(req.body);
+            return _controller__WEBPACK_IMPORTED_MODULE_3__["default"].studentHasDoubts(req.body);
 
           case 2:
             updatedClassroom = _context4.sent;
@@ -1552,7 +1567,7 @@ router.post("/isInClassroom", (0,_Middlwares_error_handler__WEBPACK_IMPORTED_MOD
     return _ref4.apply(this, arguments);
   };
 }()));
-router.post("/doit", (0,_Middlwares_error_handler__WEBPACK_IMPORTED_MODULE_4__.asyncHandler)( /*#__PURE__*/function () {
+router.post("/isInClassroom", (0,_Middlwares_error_handler__WEBPACK_IMPORTED_MODULE_4__.asyncHandler)( /*#__PURE__*/function () {
   var _ref5 = _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_0___default()( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default().mark(function _callee5(req, res) {
     var updatedClassroom;
     return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default().wrap(function _callee5$(_context5) {
@@ -1560,7 +1575,7 @@ router.post("/doit", (0,_Middlwares_error_handler__WEBPACK_IMPORTED_MODULE_4__.a
         switch (_context5.prev = _context5.next) {
           case 0:
             _context5.next = 2;
-            return _controller__WEBPACK_IMPORTED_MODULE_3__["default"].doIt(req.body);
+            return _controller__WEBPACK_IMPORTED_MODULE_3__["default"].studentIsInClassroom(req.body);
 
           case 2:
             updatedClassroom = _context5.sent;
@@ -1578,11 +1593,37 @@ router.post("/doit", (0,_Middlwares_error_handler__WEBPACK_IMPORTED_MODULE_4__.a
     return _ref5.apply(this, arguments);
   };
 }()));
-router.post('/uploadavatar', _Middlwares_restricted_access__WEBPACK_IMPORTED_MODULE_7__["default"], (0,_Middlwares_error_handler__WEBPACK_IMPORTED_MODULE_4__.asyncHandler)( /*#__PURE__*/function () {
+router.post("/doit", (0,_Middlwares_error_handler__WEBPACK_IMPORTED_MODULE_4__.asyncHandler)( /*#__PURE__*/function () {
   var _ref6 = _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_0___default()( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default().mark(function _callee6(req, res) {
+    var updatedClassroom;
     return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default().wrap(function _callee6$(_context6) {
       while (1) {
         switch (_context6.prev = _context6.next) {
+          case 0:
+            _context6.next = 2;
+            return _controller__WEBPACK_IMPORTED_MODULE_3__["default"].doIt(req.body);
+
+          case 2:
+            updatedClassroom = _context6.sent;
+            req.io.emit('classroomUpdated', updatedClassroom);
+
+          case 4:
+          case "end":
+            return _context6.stop();
+        }
+      }
+    }, _callee6);
+  }));
+
+  return function (_x11, _x12) {
+    return _ref6.apply(this, arguments);
+  };
+}()));
+router.post('/uploadavatar', _Middlwares_restricted_access__WEBPACK_IMPORTED_MODULE_7__["default"], (0,_Middlwares_error_handler__WEBPACK_IMPORTED_MODULE_4__.asyncHandler)( /*#__PURE__*/function () {
+  var _ref7 = _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_0___default()( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default().mark(function _callee7(req, res) {
+    return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default().wrap(function _callee7$(_context7) {
+      while (1) {
+        switch (_context7.prev = _context7.next) {
           case 0:
             console.log("Request ---", req.body);
             upload(req, res, function (err) {
@@ -1596,21 +1637,20 @@ router.post('/uploadavatar', _Middlwares_restricted_access__WEBPACK_IMPORTED_MOD
                 _controller__WEBPACK_IMPORTED_MODULE_3__["default"].insertImageIntoDatabase(req.body.studentId, req.file.filename);
                 return res.send(200).end();
               } else {
-                console.log('22222222222222');
                 return res.send(400).end();
               }
             });
 
           case 2:
           case "end":
-            return _context6.stop();
+            return _context7.stop();
         }
       }
-    }, _callee6);
+    }, _callee7);
   }));
 
-  return function (_x11, _x12) {
-    return _ref6.apply(this, arguments);
+  return function (_x13, _x14) {
+    return _ref7.apply(this, arguments);
   };
 }()));
 var storage = multer__WEBPACK_IMPORTED_MODULE_5___default().diskStorage({
@@ -1912,31 +1952,59 @@ var Controller = {
       }, _callee3);
     }))();
   },
-  getStudentClassroomAndSuscribeToItIfIsNotSuscribed: function getStudentClassroomAndSuscribeToItIfIsNotSuscribed(msg) {
+  removeStudentFromClassroom: function removeStudentFromClassroom(studentId, classroomId, cod, teacherId) {
     return _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_1___default()( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2___default().mark(function _callee4() {
-      var _yield$ClassroomModel7, _yield$ClassroomModel8, classroom, _yield$Model$findOrCr, _yield$Model$findOrCr2, student;
-
       return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2___default().wrap(function _callee4$(_context4) {
         while (1) {
           switch (_context4.prev = _context4.next) {
             case 0:
-              _context4.next = 2;
+              console.log('sssssssstudentId', studentId, classroomId);
+              _context4.next = 3;
+              return _classroom_student_model__WEBPACK_IMPORTED_MODULE_5__["default"].deleteByConditions({
+                studentId: studentId,
+                classroomId: classroomId
+              });
+
+            case 3:
+              _context4.next = 5;
+              return _classroom_controller__WEBPACK_IMPORTED_MODULE_6__["default"].getClassroomWithStudents(cod, teacherId);
+
+            case 5:
+              return _context4.abrupt("return", _context4.sent);
+
+            case 6:
+            case "end":
+              return _context4.stop();
+          }
+        }
+      }, _callee4);
+    }))();
+  },
+  getStudentClassroomAndSuscribeToItIfIsNotSuscribed: function getStudentClassroomAndSuscribeToItIfIsNotSuscribed(msg) {
+    return _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_1___default()( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2___default().mark(function _callee5() {
+      var _yield$ClassroomModel7, _yield$ClassroomModel8, classroom, _yield$Model$findOrCr, _yield$Model$findOrCr2, student;
+
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2___default().wrap(function _callee5$(_context5) {
+        while (1) {
+          switch (_context5.prev = _context5.next) {
+            case 0:
+              _context5.next = 2;
               return _classroom_model__WEBPACK_IMPORTED_MODULE_4__["default"].get({
                 teacherId: msg.teacherId,
                 cod: msg.cod
               });
 
             case 2:
-              _yield$ClassroomModel7 = _context4.sent;
+              _yield$ClassroomModel7 = _context5.sent;
               _yield$ClassroomModel8 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_0___default()(_yield$ClassroomModel7, 1);
               classroom = _yield$ClassroomModel8[0];
 
               if (!classroom) {
-                _context4.next = 15;
+                _context5.next = 16;
                 break;
               }
 
-              _context4.next = 8;
+              _context5.next = 8;
               return _model__WEBPACK_IMPORTED_MODULE_3__["default"].findOrCreate({
                 auth0Id: msg.auth0Id
               }, {
@@ -1946,59 +2014,25 @@ var Controller = {
               });
 
             case 8:
-              _yield$Model$findOrCr = _context4.sent;
+              _yield$Model$findOrCr = _context5.sent;
               _yield$Model$findOrCr2 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_0___default()(_yield$Model$findOrCr, 1);
               student = _yield$Model$findOrCr2[0];
-              _classroom_student_model__WEBPACK_IMPORTED_MODULE_5__["default"].create({
+              _context5.next = 13;
+              return _classroom_student_model__WEBPACK_IMPORTED_MODULE_5__["default"].findOrCreate({
+                studentId: student.id,
+                classroomId: classroom.id
+              }, {
                 studentId: student.id,
                 classroomId: classroom.id
               });
-              return _context4.abrupt("return", classroom);
 
-            case 15:
-              return _context4.abrupt("return", null);
+            case 13:
+              return _context5.abrupt("return", classroom);
 
             case 16:
-            case "end":
-              return _context4.stop();
-          }
-        }
-      }, _callee4);
-    }))();
-  },
-  doIt: function doIt(data) {
-    return _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_1___default()( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2___default().mark(function _callee5() {
-      var _yield$ClassroomModel9, _yield$ClassroomModel10, classroom;
+              return _context5.abrupt("return", null);
 
-      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2___default().wrap(function _callee5$(_context5) {
-        while (1) {
-          switch (_context5.prev = _context5.next) {
-            case 0:
-              _context5.next = 2;
-              return _classroom_model__WEBPACK_IMPORTED_MODULE_4__["default"].get({
-                cod: data.cod,
-                teacherId: data.teacherId
-              });
-
-            case 2:
-              _yield$ClassroomModel9 = _context5.sent;
-              _yield$ClassroomModel10 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_0___default()(_yield$ClassroomModel9, 1);
-              classroom = _yield$ClassroomModel10[0];
-              _context5.next = 7;
-              return _classroom_student_model__WEBPACK_IMPORTED_MODULE_5__["default"].update({
-                classroomId: classroom.id
-              }, {
-                doIt: data.doIt
-              });
-
-            case 7:
-              _context5.next = 9;
-              return _classroom_controller__WEBPACK_IMPORTED_MODULE_6__["default"].getClassroomWithStudents(data.cod, data.teacherId);
-
-            case 9:
-              return _context5.abrupt("return", _context5.sent);
-
-            case 10:
+            case 17:
             case "end":
               return _context5.stop();
           }
@@ -2006,23 +2040,63 @@ var Controller = {
       }, _callee5);
     }))();
   },
-  insertImageIntoDatabase: function insertImageIntoDatabase(id, imageName) {
+  doIt: function doIt(data) {
     return _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_1___default()( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2___default().mark(function _callee6() {
+      var _yield$ClassroomModel9, _yield$ClassroomModel10, classroom;
+
       return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2___default().wrap(function _callee6$(_context6) {
         while (1) {
           switch (_context6.prev = _context6.next) {
             case 0:
               _context6.next = 2;
+              return _classroom_model__WEBPACK_IMPORTED_MODULE_4__["default"].get({
+                cod: data.cod,
+                teacherId: data.teacherId
+              });
+
+            case 2:
+              _yield$ClassroomModel9 = _context6.sent;
+              _yield$ClassroomModel10 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_0___default()(_yield$ClassroomModel9, 1);
+              classroom = _yield$ClassroomModel10[0];
+              _context6.next = 7;
+              return _classroom_student_model__WEBPACK_IMPORTED_MODULE_5__["default"].update({
+                classroomId: classroom.id
+              }, {
+                doIt: data.doIt
+              });
+
+            case 7:
+              _context6.next = 9;
+              return _classroom_controller__WEBPACK_IMPORTED_MODULE_6__["default"].getClassroomWithStudents(data.cod, data.teacherId);
+
+            case 9:
+              return _context6.abrupt("return", _context6.sent);
+
+            case 10:
+            case "end":
+              return _context6.stop();
+          }
+        }
+      }, _callee6);
+    }))();
+  },
+  insertImageIntoDatabase: function insertImageIntoDatabase(id, imageName) {
+    return _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_1___default()( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2___default().mark(function _callee7() {
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2___default().wrap(function _callee7$(_context7) {
+        while (1) {
+          switch (_context7.prev = _context7.next) {
+            case 0:
+              _context7.next = 2;
               return _model__WEBPACK_IMPORTED_MODULE_3__["default"].updateById(id, {
                 uploadedPicture: imageName
               });
 
             case 2:
             case "end":
-              return _context6.stop();
+              return _context7.stop();
           }
         }
-      }, _callee6);
+      }, _callee7);
     }))();
   }
 };

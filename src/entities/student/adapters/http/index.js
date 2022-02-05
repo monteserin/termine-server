@@ -21,23 +21,33 @@ router.post("/", asyncHandler(async (req, res) => {
     })
     res.send(data);
 }));
+
+router.post("/removeFromClassroom", asyncHandler(async (req, res) => {
+    const {body: {studentId, classroomId}} = req;
+    await Controller.removeStudentFromClassroom(studentId, classroomId);
+
+    const updatedClassroom = await Controller.studentHasTerminated(req.body);
+    req.io.emit('classroomUpdated', updatedClassroom);
+}));
+
+
 router.post("/hasTerminated", asyncHandler(async (req, res) => {
-    const updatedClassroom  = await Controller.studentHasTerminated(req.body);
+    const updatedClassroom = await Controller.studentHasTerminated(req.body);
     req.io.emit('classroomUpdated', updatedClassroom);
 }));
 
 router.post("/hasDoubts", asyncHandler(async (req, res) => {
-    const updatedClassroom  = await Controller.studentHasDoubts(req.body);
+    const updatedClassroom = await Controller.studentHasDoubts(req.body);
     req.io.emit('classroomUpdated', updatedClassroom);
 }));
 
 router.post("/isInClassroom", asyncHandler(async (req, res) => {
-    const updatedClassroom  = await Controller.studentIsInClassroom(req.body);
+    const updatedClassroom = await Controller.studentIsInClassroom(req.body);
     req.io.emit('classroomUpdated', updatedClassroom);
 }));
 
 router.post("/doit", asyncHandler(async (req, res) => {
-    const updatedClassroom  = await Controller.doIt(req.body);
+    const updatedClassroom = await Controller.doIt(req.body);
     req.io.emit('classroomUpdated', updatedClassroom);
 }));
 
@@ -48,14 +58,12 @@ router.post('/uploadavatar', restrictedAccess, asyncHandler(async (req, res) => 
         console.log("Request ---", req.body);
         console.log("Request file ---", req.file);//Here you get file.
         /*Now do where ever you want to do*/
-        if(!err && req.file){
+        if (!err && req.file) {
             //req.userId
             Controller.insertImageIntoDatabase(req.body.studentId, req.file.filename);
             return res.send(200).end();
 
-        }
-        else{
-            console.log('22222222222222')
+        } else {
             return res.send(400).end();
         }
     });
@@ -64,14 +72,14 @@ router.post('/uploadavatar', restrictedAccess, asyncHandler(async (req, res) => 
 
 const storage = multer.diskStorage({
     destination: "./public/uploads/",
-    filename: function(req, file, cb){
+    filename: function (req, file, cb) {
         const imageName = "image-" + req.userId + path.extname(file.originalname);
         cb(null, imageName);
     }
 });
- const upload = multer({
+const upload = multer({
     storage: storage,
-    limits:{fileSize: 1000000},
+    limits: {fileSize: 1000000},
 }).single("myImage");
 
 
