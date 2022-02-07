@@ -20,6 +20,8 @@ router.post("/", asyncHandler(async (req, res) => {
         picture,
         name
     })
+
+    console.log(data)
     res.send(data);
 }));
 

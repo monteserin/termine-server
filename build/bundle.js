@@ -1548,9 +1548,10 @@ router.post("/", (0,_Middlwares_error_handler__WEBPACK_IMPORTED_MODULE_4__.async
 
           case 3:
             data = _context.sent;
+            console.log(data);
             res.send(data);
 
-          case 5:
+          case 6:
           case "end":
             return _context.stop();
         }
