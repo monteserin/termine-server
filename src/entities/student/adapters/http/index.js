@@ -3,6 +3,7 @@ import Controller from "../../controller";
 import {asyncHandler} from "@Middlwares/error-handler";
 import multer from "multer";
 import path from "path";
+import {uploadStream} from '../../../../application/utils/cloudinary';
 
 // Para operaciones con acceso restringido, introduciremos un segundo parámetro que será la variable restrictedAccess
 import restrictedAccess from "@Middlwares/restricted-access";
@@ -23,9 +24,8 @@ router.post("/", asyncHandler(async (req, res) => {
 }));
 
 router.post("/removeFromClassroom", asyncHandler(async (req, res) => {
-    const {body: {studentId, classroomId}} = req;
-    await Controller.removeStudentFromClassroom(studentId, classroomId);
-
+    const {body: {studentId, classroomId, cod, teacherId}} = req;
+    await Controller.removeStudentFromClassroom(studentId, classroomId, cod, teacherId);
     const updatedClassroom = await Controller.studentHasTerminated(req.body);
     req.io.emit('classroomUpdated', updatedClassroom);
 }));
@@ -34,53 +34,58 @@ router.post("/removeFromClassroom", asyncHandler(async (req, res) => {
 router.post("/hasTerminated", asyncHandler(async (req, res) => {
     const updatedClassroom = await Controller.studentHasTerminated(req.body);
     req.io.emit('classroomUpdated', updatedClassroom);
+    res.send(200);
 }));
 
 router.post("/hasDoubts", asyncHandler(async (req, res) => {
     const updatedClassroom = await Controller.studentHasDoubts(req.body);
     req.io.emit('classroomUpdated', updatedClassroom);
+    res.send(200);
 }));
 
 router.post("/isInClassroom", asyncHandler(async (req, res) => {
     const updatedClassroom = await Controller.studentIsInClassroom(req.body);
     req.io.emit('classroomUpdated', updatedClassroom);
+    res.send(200);
 }));
 
 router.post("/doit", asyncHandler(async (req, res) => {
     const updatedClassroom = await Controller.doIt(req.body);
     req.io.emit('classroomUpdated', updatedClassroom);
+    res.send(200);
 }));
 
-router.post('/uploadavatar', restrictedAccess, asyncHandler(async (req, res) => {
-    console.log("Request ---", req.body);
 
-    upload(req, res, (err) => {
-        console.log("Request ---", req.body);
-        console.log("Request file ---", req.file);//Here you get file.
-        /*Now do where ever you want to do*/
-        if (!err && req.file) {
-            //req.userId
-            Controller.insertImageIntoDatabase(req.body.studentId, req.file.filename);
-            return res.send(200).end();
-
-        } else {
-            return res.send(400).end();
-        }
-    });
-
-}));
-
-const storage = multer.diskStorage({
+// Multer debe usarse como middleware
+const storage2 = multer.diskStorage({
     destination: "./public/uploads/",
     filename: function (req, file, cb) {
         const imageName = "image-" + req.userId + path.extname(file.originalname);
         cb(null, imageName);
     }
 });
-const upload = multer({
-    storage: storage,
-    limits: {fileSize: 1000000},
-}).single("myImage");
+
+const storage = multer.memoryStorage({
+    destination: "./public/uploads/",
+});
+const upload = multer({storage})
+
+
+router.post('/uploadavatar', upload.single('file'), asyncHandler(async (req, res) => {
+    const studentId = req.body.studentId;
+
+    if (req.file) {
+        const result = await uploadStream(req.file.buffer, {folder:'termine', public_id:studentId})
+       // console.log(result)
+    }
+}));
+
+router.post('/setAvatarType', asyncHandler(async (req, res) => {
+    const {body: {avatarType, studentId, cod, teacherId}} = req;
+    const updatedClassroom = await Controller.setAvatarType({avatarType,studentId, cod, teacherId});
+    req.io.emit('classroomUpdated', updatedClassroom);
+    res.send(200);
+}));
 
 
 export default app => app.use('/student', router);

@@ -44,7 +44,6 @@ const Controller = {
     },
 
     async removeStudentFromClassroom(studentId, classroomId, cod, teacherId) {
-        console.log('sssssssstudentId' , studentId, classroomId)
         await ClassroomStudentModel.deleteByConditions({ studentId, classroomId})
         return await ClassroomController.getClassroomWithStudents(cod, teacherId);
     },
@@ -75,7 +74,12 @@ const Controller = {
     },
     async insertImageIntoDatabase(id, imageName){
         await Model.updateById(id, {uploadedPicture:imageName})
-    }
+    },
+
+    async setAvatarType(data) {
+        await Model.update({id: data.studentId}, {avatarType: data.avatarType});
+        return await ClassroomController.getClassroomWithStudents(data.cod, data.teacherId);
+    },
 
 }
 

@@ -6,7 +6,7 @@ const GenericModel = Model => ({
         return Model.findAll(conditions ? {where:conditions } : {});
     },
     getById(id) {
-        return Model.findOne({ where: { id } });
+        return Model.findOne({ where: { id } , raw:true});
     },
     updateById(id, data) {
         return Model.update(data, { where: { id } });
@@ -18,7 +18,7 @@ const GenericModel = Model => ({
         return Model.destroy({ where: { id } });
     },
     deleteByConditions(conditions) {
-        console.log('111111111111111111111111111111111')
+        console.log('deleteByConditions')
         console.log(conditions)
 
         return Model.destroy({ where: conditions });

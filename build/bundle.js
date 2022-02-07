@@ -64,6 +64,24 @@ var getKey = function getKey(header, callback) {
 
 /***/ }),
 
+/***/ "./src/application/config/cloudinary.js":
+/*!**********************************************!*\
+  !*** ./src/application/config/cloudinary.js ***!
+  \**********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "cloud_name": () => (/* binding */ cloud_name),
+/* harmony export */   "api_key": () => (/* binding */ api_key),
+/* harmony export */   "api_secret": () => (/* binding */ api_secret)
+/* harmony export */ });
+var cloud_name = 'da4rcdlvw';
+var api_key = '569129219998658';
+var api_secret = 'oUUuJqnI8GAU_zrQzcVGgR7XbS8';
+
+/***/ }),
+
 /***/ "./src/application/config/sockets.js":
 /*!*******************************************!*\
   !*** ./src/application/config/sockets.js ***!
@@ -432,7 +450,8 @@ var GenericModel = function GenericModel(Model) {
       return Model.findOne({
         where: {
           id: id
-        }
+        },
+        raw: true
       });
     },
     updateById: function updateById(id, data) {
@@ -455,7 +474,7 @@ var GenericModel = function GenericModel(Model) {
       });
     },
     deleteByConditions: function deleteByConditions(conditions) {
-      console.log('111111111111111111111111111111111');
+      console.log('deleteByConditions');
       console.log(conditions);
       return Model.destroy({
         where: conditions
@@ -471,6 +490,55 @@ var GenericModel = function GenericModel(Model) {
 };
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (GenericModel);
+
+/***/ }),
+
+/***/ "./src/application/utils/cloudinary/index.js":
+/*!***************************************************!*\
+  !*** ./src/application/utils/cloudinary/index.js ***!
+  \***************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "uploadStream": () => (/* binding */ uploadStream),
+/* harmony export */   "removeFile": () => (/* binding */ removeFile)
+/* harmony export */ });
+/* harmony import */ var cloudinary__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! cloudinary */ "cloudinary");
+/* harmony import */ var cloudinary__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(cloudinary__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _application_config_cloudinary__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../application/config/cloudinary */ "./src/application/config/cloudinary.js");
+
+
+var _Cloudinary$v = (cloudinary__WEBPACK_IMPORTED_MODULE_0___default().v2),
+    uploader = _Cloudinary$v.uploader,
+    config = _Cloudinary$v.config;
+config({
+  cloud_name: _application_config_cloudinary__WEBPACK_IMPORTED_MODULE_1__.cloud_name,
+  api_key: _application_config_cloudinary__WEBPACK_IMPORTED_MODULE_1__.api_key,
+  api_secret: _application_config_cloudinary__WEBPACK_IMPORTED_MODULE_1__.api_secret
+});
+var uploadStream = function uploadStream(fileBuffer, options) {
+  return new Promise(function (resolve, reject) {
+    uploader.upload_stream(options, function (error, result) {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(result);
+      }
+    }).end(fileBuffer);
+  });
+};
+var removeFile = function removeFile(public_id) {
+  return new Promise(function (resolve, reject) {
+    return uploader.destroy(public_id, function (err) {
+      if (err) {
+        reject(err);
+      } else {
+        resolve();
+      }
+    });
+  });
+};
 
 /***/ }),
 
@@ -647,7 +715,6 @@ __webpack_require__.r(__webpack_exports__);
 
 var Controller = {
   login: function login(token, isTeacher) {
-    console.log('ññññññññññññññññññññññññññ');
     return (0,_service__WEBPACK_IMPORTED_MODULE_1__["default"])().signIn(token, isTeacher);
   }
 };
@@ -1144,6 +1211,9 @@ var Controller = {
   deleteById: function deleteById(id) {
     return _model__WEBPACK_IMPORTED_MODULE_3__["default"].deleteById(id);
   },
+  getMostRecentCod: function getMostRecentCod(teacherId) {
+    return _model__WEBPACK_IMPORTED_MODULE_3__["default"].getMostRecentCod(teacherId);
+  },
   getClassroomWithStudents: function getClassroomWithStudents(cod, teacherId) {
     return _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_1___default()( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2___default().mark(function _callee() {
       var classroom;
@@ -1331,10 +1401,17 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 
 var Model = _objectSpread(_objectSpread({}, (0,_Application_repository_generic_model__WEBPACK_IMPORTED_MODULE_2__["default"])(_schema__WEBPACK_IMPORTED_MODULE_1__["default"])), {}, {
   getClassroomWithStudents: function getClassroomWithStudents(conditions) {
-    console.log('getClassroomWithStudents');
     return _schema__WEBPACK_IMPORTED_MODULE_1__["default"].findOne({
       where: conditions,
       include: _student_model_schema__WEBPACK_IMPORTED_MODULE_3__["default"]
+    });
+  },
+  getMostRecentCod: function getMostRecentCod(teacherId) {
+    return _schema__WEBPACK_IMPORTED_MODULE_1__["default"].findOne({
+      where: {
+        teacherId: teacherId
+      },
+      order: [['createdAt', 'DESC']]
     });
   }
 });
@@ -1438,7 +1515,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var multer__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(multer__WEBPACK_IMPORTED_MODULE_5__);
 /* harmony import */ var path__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! path */ "path");
 /* harmony import */ var path__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(path__WEBPACK_IMPORTED_MODULE_6__);
-/* harmony import */ var _Middlwares_restricted_access__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @Middlwares/restricted-access */ "./src/application/middlewares/restricted-access.js");
+/* harmony import */ var _application_utils_cloudinary__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../../../application/utils/cloudinary */ "./src/application/utils/cloudinary/index.js");
+/* harmony import */ var _Middlwares_restricted_access__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @Middlwares/restricted-access */ "./src/application/middlewares/restricted-access.js");
+
 
 
 
@@ -1485,15 +1564,15 @@ router.post("/", (0,_Middlwares_error_handler__WEBPACK_IMPORTED_MODULE_4__.async
 }()));
 router.post("/removeFromClassroom", (0,_Middlwares_error_handler__WEBPACK_IMPORTED_MODULE_4__.asyncHandler)( /*#__PURE__*/function () {
   var _ref2 = _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_0___default()( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default().mark(function _callee2(req, res) {
-    var _req$body2, studentId, classroomId, updatedClassroom;
+    var _req$body2, studentId, classroomId, cod, teacherId, updatedClassroom;
 
     return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default().wrap(function _callee2$(_context2) {
       while (1) {
         switch (_context2.prev = _context2.next) {
           case 0:
-            _req$body2 = req.body, studentId = _req$body2.studentId, classroomId = _req$body2.classroomId;
+            _req$body2 = req.body, studentId = _req$body2.studentId, classroomId = _req$body2.classroomId, cod = _req$body2.cod, teacherId = _req$body2.teacherId;
             _context2.next = 3;
-            return _controller__WEBPACK_IMPORTED_MODULE_3__["default"].removeStudentFromClassroom(studentId, classroomId);
+            return _controller__WEBPACK_IMPORTED_MODULE_3__["default"].removeStudentFromClassroom(studentId, classroomId, cod, teacherId);
 
           case 3:
             _context2.next = 5;
@@ -1528,8 +1607,9 @@ router.post("/hasTerminated", (0,_Middlwares_error_handler__WEBPACK_IMPORTED_MOD
           case 2:
             updatedClassroom = _context3.sent;
             req.io.emit('classroomUpdated', updatedClassroom);
+            res.send(200);
 
-          case 4:
+          case 5:
           case "end":
             return _context3.stop();
         }
@@ -1554,8 +1634,9 @@ router.post("/hasDoubts", (0,_Middlwares_error_handler__WEBPACK_IMPORTED_MODULE_
           case 2:
             updatedClassroom = _context4.sent;
             req.io.emit('classroomUpdated', updatedClassroom);
+            res.send(200);
 
-          case 4:
+          case 5:
           case "end":
             return _context4.stop();
         }
@@ -1580,8 +1661,9 @@ router.post("/isInClassroom", (0,_Middlwares_error_handler__WEBPACK_IMPORTED_MOD
           case 2:
             updatedClassroom = _context5.sent;
             req.io.emit('classroomUpdated', updatedClassroom);
+            res.send(200);
 
-          case 4:
+          case 5:
           case "end":
             return _context5.stop();
         }
@@ -1606,8 +1688,9 @@ router.post("/doit", (0,_Middlwares_error_handler__WEBPACK_IMPORTED_MODULE_4__.a
           case 2:
             updatedClassroom = _context6.sent;
             req.io.emit('classroomUpdated', updatedClassroom);
+            res.send(200);
 
-          case 4:
+          case 5:
           case "end":
             return _context6.stop();
         }
@@ -1618,30 +1701,45 @@ router.post("/doit", (0,_Middlwares_error_handler__WEBPACK_IMPORTED_MODULE_4__.a
   return function (_x11, _x12) {
     return _ref6.apply(this, arguments);
   };
-}()));
-router.post('/uploadavatar', _Middlwares_restricted_access__WEBPACK_IMPORTED_MODULE_7__["default"], (0,_Middlwares_error_handler__WEBPACK_IMPORTED_MODULE_4__.asyncHandler)( /*#__PURE__*/function () {
+}())); // Multer debe usarse como middleware
+
+var storage2 = multer__WEBPACK_IMPORTED_MODULE_5___default().diskStorage({
+  destination: "./public/uploads/",
+  filename: function filename(req, file, cb) {
+    var imageName = "image-" + req.userId + path__WEBPACK_IMPORTED_MODULE_6___default().extname(file.originalname);
+    cb(null, imageName);
+  }
+});
+var storage = multer__WEBPACK_IMPORTED_MODULE_5___default().memoryStorage({
+  destination: "./public/uploads/"
+});
+var upload = multer__WEBPACK_IMPORTED_MODULE_5___default()({
+  storage: storage
+});
+router.post('/uploadavatar', upload.single('file'), (0,_Middlwares_error_handler__WEBPACK_IMPORTED_MODULE_4__.asyncHandler)( /*#__PURE__*/function () {
   var _ref7 = _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_0___default()( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default().mark(function _callee7(req, res) {
+    var studentId, result;
     return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default().wrap(function _callee7$(_context7) {
       while (1) {
         switch (_context7.prev = _context7.next) {
           case 0:
-            console.log("Request ---", req.body);
-            upload(req, res, function (err) {
-              console.log("Request ---", req.body);
-              console.log("Request file ---", req.file); //Here you get file.
+            studentId = req.body.studentId;
 
-              /*Now do where ever you want to do*/
+            if (!req.file) {
+              _context7.next = 5;
+              break;
+            }
 
-              if (!err && req.file) {
-                //req.userId
-                _controller__WEBPACK_IMPORTED_MODULE_3__["default"].insertImageIntoDatabase(req.body.studentId, req.file.filename);
-                return res.send(200).end();
-              } else {
-                return res.send(400).end();
-              }
+            _context7.next = 4;
+            return (0,_application_utils_cloudinary__WEBPACK_IMPORTED_MODULE_7__.uploadStream)(req.file.buffer, {
+              folder: 'termine',
+              public_id: studentId
             });
 
-          case 2:
+          case 4:
+            result = _context7.sent;
+
+          case 5:
           case "end":
             return _context7.stop();
         }
@@ -1653,19 +1751,40 @@ router.post('/uploadavatar', _Middlwares_restricted_access__WEBPACK_IMPORTED_MOD
     return _ref7.apply(this, arguments);
   };
 }()));
-var storage = multer__WEBPACK_IMPORTED_MODULE_5___default().diskStorage({
-  destination: "./public/uploads/",
-  filename: function filename(req, file, cb) {
-    var imageName = "image-" + req.userId + path__WEBPACK_IMPORTED_MODULE_6___default().extname(file.originalname);
-    cb(null, imageName);
-  }
-});
-var upload = multer__WEBPACK_IMPORTED_MODULE_5___default()({
-  storage: storage,
-  limits: {
-    fileSize: 1000000
-  }
-}).single("myImage");
+router.post('/setAvatarType', (0,_Middlwares_error_handler__WEBPACK_IMPORTED_MODULE_4__.asyncHandler)( /*#__PURE__*/function () {
+  var _ref8 = _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_0___default()( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default().mark(function _callee8(req, res) {
+    var _req$body3, avatarType, studentId, cod, teacherId, updatedClassroom;
+
+    return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default().wrap(function _callee8$(_context8) {
+      while (1) {
+        switch (_context8.prev = _context8.next) {
+          case 0:
+            _req$body3 = req.body, avatarType = _req$body3.avatarType, studentId = _req$body3.studentId, cod = _req$body3.cod, teacherId = _req$body3.teacherId;
+            _context8.next = 3;
+            return _controller__WEBPACK_IMPORTED_MODULE_3__["default"].setAvatarType({
+              avatarType: avatarType,
+              studentId: studentId,
+              cod: cod,
+              teacherId: teacherId
+            });
+
+          case 3:
+            updatedClassroom = _context8.sent;
+            req.io.emit('classroomUpdated', updatedClassroom);
+            res.send(200);
+
+          case 6:
+          case "end":
+            return _context8.stop();
+        }
+      }
+    }, _callee8);
+  }));
+
+  return function (_x15, _x16) {
+    return _ref8.apply(this, arguments);
+  };
+}()));
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (function (app) {
   return app.use('/student', router);
 });
@@ -1748,7 +1867,7 @@ var StartSocketServer = function StartSocketServer(io, socket) {
       return _ref2.apply(this, arguments);
     };
   }()));
-  socket.on('emitStudentsUpdated', (0,_Middlwares_error_handler__WEBPACK_IMPORTED_MODULE_2__.socketHandler)( /*#__PURE__*/function () {
+  socket.on('studentsUpdated', (0,_Middlwares_error_handler__WEBPACK_IMPORTED_MODULE_2__.socketHandler)( /*#__PURE__*/function () {
     var _ref3 = _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_0___default()( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default().mark(function _callee3(msg) {
       var updatedClassroom;
       return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default().wrap(function _callee3$(_context3) {
@@ -1760,7 +1879,7 @@ var StartSocketServer = function StartSocketServer(io, socket) {
 
             case 2:
               updatedClassroom = _context3.sent;
-              io.emit('studentsUpdated', updatedClassroom);
+              io.emit('classroomUpdated', updatedClassroom);
 
             case 4:
             case "end":
@@ -1958,21 +2077,20 @@ var Controller = {
         while (1) {
           switch (_context4.prev = _context4.next) {
             case 0:
-              console.log('sssssssstudentId', studentId, classroomId);
-              _context4.next = 3;
+              _context4.next = 2;
               return _classroom_student_model__WEBPACK_IMPORTED_MODULE_5__["default"].deleteByConditions({
                 studentId: studentId,
                 classroomId: classroomId
               });
 
-            case 3:
-              _context4.next = 5;
+            case 2:
+              _context4.next = 4;
               return _classroom_controller__WEBPACK_IMPORTED_MODULE_6__["default"].getClassroomWithStudents(cod, teacherId);
 
-            case 5:
+            case 4:
               return _context4.abrupt("return", _context4.sent);
 
-            case 6:
+            case 5:
             case "end":
               return _context4.stop();
           }
@@ -2098,6 +2216,34 @@ var Controller = {
         }
       }, _callee7);
     }))();
+  },
+  setAvatarType: function setAvatarType(data) {
+    return _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_1___default()( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2___default().mark(function _callee8() {
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2___default().wrap(function _callee8$(_context8) {
+        while (1) {
+          switch (_context8.prev = _context8.next) {
+            case 0:
+              _context8.next = 2;
+              return _model__WEBPACK_IMPORTED_MODULE_3__["default"].update({
+                id: data.studentId
+              }, {
+                avatarType: data.avatarType
+              });
+
+            case 2:
+              _context8.next = 4;
+              return _classroom_controller__WEBPACK_IMPORTED_MODULE_6__["default"].getClassroomWithStudents(data.cod, data.teacherId);
+
+            case 4:
+              return _context8.abrupt("return", _context8.sent);
+
+            case 5:
+            case "end":
+              return _context8.stop();
+          }
+        }
+      }, _callee8);
+    }))();
   }
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Controller);
@@ -2164,7 +2310,10 @@ var Student = _Application_database__WEBPACK_IMPORTED_MODULE_0__.db.define('stud
   },
   picture: _Application_database__WEBPACK_IMPORTED_MODULE_0__.DataTypes.STRING,
   uploadedPicture: _Application_database__WEBPACK_IMPORTED_MODULE_0__.DataTypes.STRING,
-  avatarType: _Application_database__WEBPACK_IMPORTED_MODULE_0__.DataTypes.SMALLINT,
+  avatarType: {
+    type: _Application_database__WEBPACK_IMPORTED_MODULE_0__.DataTypes.SMALLINT,
+    defaultValue: 0
+  },
   name: _Application_database__WEBPACK_IMPORTED_MODULE_0__.DataTypes.STRING
 });
 
@@ -2197,8 +2346,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var express__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! express */ "express");
 /* harmony import */ var express__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(express__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _controller__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../controller */ "./src/entities/teacher/controller/index.js");
-/* harmony import */ var _Middlwares_error_handler__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @Middlwares/error-handler */ "./src/application/middlewares/error-handler.js");
-/* harmony import */ var _Middlwares_restricted_access__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @Middlwares/restricted-access */ "./src/application/middlewares/restricted-access.js");
+/* harmony import */ var _classroom_controller__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../classroom/controller */ "./src/entities/classroom/controller/index.js");
+/* harmony import */ var _Middlwares_error_handler__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @Middlwares/error-handler */ "./src/application/middlewares/error-handler.js");
+/* harmony import */ var _Middlwares_restricted_access__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @Middlwares/restricted-access */ "./src/application/middlewares/restricted-access.js");
+
 
 
 
@@ -2207,29 +2358,32 @@ __webpack_require__.r(__webpack_exports__);
 
 
 var router = express__WEBPACK_IMPORTED_MODULE_2___default().Router();
-router.post("/", (0,_Middlwares_error_handler__WEBPACK_IMPORTED_MODULE_4__.asyncHandler)( /*#__PURE__*/function () {
+router.post("/", (0,_Middlwares_error_handler__WEBPACK_IMPORTED_MODULE_5__.asyncHandler)( /*#__PURE__*/function () {
   var _ref = _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_0___default()( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default().mark(function _callee(req, res) {
-    var _req$body, auth0Id, id, teacherData;
+    var _req$body, auth0Id, id, teacherId, teacherData;
 
     return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default().wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
-            _req$body = req.body, auth0Id = _req$body.auth0Id, id = _req$body.id;
+            _req$body = req.body, auth0Id = _req$body.auth0Id, id = _req$body.id, teacherId = _req$body.teacherId; // Compruebo si algún profe tiene ese teacherId
+
             _context.next = 3;
-            return _controller__WEBPACK_IMPORTED_MODULE_3__["default"].getById(id);
+            return _controller__WEBPACK_IMPORTED_MODULE_3__["default"].get({
+              teacherId: teacherId
+            });
 
           case 3:
             teacherData = _context.sent;
 
-            if (teacherData) {
+            if (!(teacherData.length === 0)) {
               _context.next = 10;
               break;
             }
 
             _context.next = 7;
-            return _controller__WEBPACK_IMPORTED_MODULE_3__["default"].create({
-              auth0Id: auth0Id
+            return _controller__WEBPACK_IMPORTED_MODULE_3__["default"].updateById(id, {
+              teacherId: teacherId
             });
 
           case 7:
@@ -2240,15 +2394,9 @@ router.post("/", (0,_Middlwares_error_handler__WEBPACK_IMPORTED_MODULE_4__.async
             break;
 
           case 10:
-            if (teacherData.auth0Id !== auth0Id) {
-              res.send({
-                status: 'Another teacher has this teacherId'
-              });
-            } else {
-              res.send({
-                status: 'This teacherId is already yours'
-              });
-            }
+            res.send({
+              status: 'Another teacher has this teacherId'
+            });
 
           case 11:
           case "end":
@@ -2260,6 +2408,62 @@ router.post("/", (0,_Middlwares_error_handler__WEBPACK_IMPORTED_MODULE_4__.async
 
   return function (_x, _x2) {
     return _ref.apply(this, arguments);
+  };
+}()));
+router.get("/getTeacherId", (0,_Middlwares_error_handler__WEBPACK_IMPORTED_MODULE_5__.asyncHandler)( /*#__PURE__*/function () {
+  var _ref2 = _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_0___default()( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default().mark(function _callee2(req, res) {
+    var auth0Id, data;
+    return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default().wrap(function _callee2$(_context2) {
+      while (1) {
+        switch (_context2.prev = _context2.next) {
+          case 0:
+            auth0Id = req.query.auth0Id;
+            _context2.next = 3;
+            return _controller__WEBPACK_IMPORTED_MODULE_3__["default"].get({
+              auth0Id: auth0Id
+            });
+
+          case 3:
+            data = _context2.sent;
+            res.send(data);
+
+          case 5:
+          case "end":
+            return _context2.stop();
+        }
+      }
+    }, _callee2);
+  }));
+
+  return function (_x3, _x4) {
+    return _ref2.apply(this, arguments);
+  };
+}()));
+router.get("/getLastTeacherCod", (0,_Middlwares_error_handler__WEBPACK_IMPORTED_MODULE_5__.asyncHandler)( /*#__PURE__*/function () {
+  var _ref3 = _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_0___default()( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default().mark(function _callee3(req, res) {
+    var teacherId, lastCod;
+    return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default().wrap(function _callee3$(_context3) {
+      while (1) {
+        switch (_context3.prev = _context3.next) {
+          case 0:
+            teacherId = req.query.teacherId;
+            _context3.next = 3;
+            return _classroom_controller__WEBPACK_IMPORTED_MODULE_4__["default"].getMostRecentCod(teacherId);
+
+          case 3:
+            lastCod = _context3.sent;
+            res.send(lastCod);
+
+          case 5:
+          case "end":
+            return _context3.stop();
+        }
+      }
+    }, _callee3);
+  }));
+
+  return function (_x5, _x6) {
+    return _ref3.apply(this, arguments);
   };
 }()));
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (function (app) {
@@ -2410,6 +2614,16 @@ module.exports = require("@babel/runtime/regenerator");
 /***/ ((module) => {
 
 module.exports = require("auth0");
+
+/***/ }),
+
+/***/ "cloudinary":
+/*!*****************************!*\
+  !*** external "cloudinary" ***!
+  \*****************************/
+/***/ ((module) => {
+
+module.exports = require("cloudinary");
 
 /***/ }),
 

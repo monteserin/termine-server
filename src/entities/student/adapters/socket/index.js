@@ -14,9 +14,9 @@ const StartSocketServer = (io, socket) => {
         io.emit('studentHasTerminated', updatedClassroom);
     }));
 
-    socket.on('emitStudentsUpdated',socketHandler(async (msg) => {
+    socket.on('studentsUpdated',socketHandler(async (msg) => {
         const updatedClassroom = await ClassroomController.getClassroomWithStudents(msg.cod, msg.teacherId);
-        io.emit('studentsUpdated', updatedClassroom);
+        io.emit('classroomUpdated', updatedClassroom);
     }))
 };
 

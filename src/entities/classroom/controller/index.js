@@ -17,6 +17,9 @@ const Controller = {
     deleteById(id) {
         return Model.deleteById(id);
     },
+    getMostRecentCod(teacherId) {
+        return Model.getMostRecentCod(teacherId);
+    },
     async getClassroomWithStudents(cod, teacherId) {
         const classroom = await Model.getClassroomWithStudents({cod, teacherId});
         return classroom;
@@ -31,12 +34,12 @@ const Controller = {
     },
     async updateTxt(cod, teacherId, txt) {
         const [classroom] = await Model.get({cod, teacherId});
-        await Model.updateById( classroom.id, {txt});
+        await Model.updateById(classroom.id, {txt});
         return await Model.getClassroomWithStudents({cod, teacherId});
     },
     async newExercise(cod, teacherId) {
         const [classroom] = await Model.get({cod, teacherId});
-        await ClassroomStudent.update({classroomId:classroom.dataValues.id},{hasTerminated:false});
+        await ClassroomStudent.update({classroomId: classroom.dataValues.id}, {hasTerminated: false});
         return await Model.getClassroomWithStudents({cod, teacherId});
     },
 }

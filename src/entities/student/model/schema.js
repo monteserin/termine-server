@@ -8,7 +8,10 @@ const Student = db.define('student', {
     },
     picture: DataTypes.STRING,
     uploadedPicture: DataTypes.STRING,
-    avatarType: DataTypes.SMALLINT,
+    avatarType:{
+        type:DataTypes.SMALLINT,
+        defaultValue: 0
+    },
     name: DataTypes.STRING,
 });
 
