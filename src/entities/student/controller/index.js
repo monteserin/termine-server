@@ -73,13 +73,24 @@ const Controller = {
         return await ClassroomController.getClassroomWithStudents(data.cod, data.teacherId);
     },
     async insertImageIntoDatabase(id, imageName){
-        await Model.updateById(id, {uploadedPicture:imageName})
+        await Model.update({auth0Id: id}, {uploadedPicture:imageName});
+        return await ClassroomController.getClassroomWithStudents(data.cod, data.teacherId);
     },
 
     async setAvatarType(data) {
         await Model.update({id: data.studentId}, {avatarType: data.avatarType});
         return await ClassroomController.getClassroomWithStudents(data.cod, data.teacherId);
     },
+
+
+    async saveStudentName(data) {
+        await Model.update({id: data.id}, {name: data.studentName});
+        return await ClassroomController.getClassroomWithStudents(data.cod, data.teacherId);
+    },
+
+
+
+
 
 }
 

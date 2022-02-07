@@ -1719,28 +1719,36 @@ var upload = multer__WEBPACK_IMPORTED_MODULE_5___default()({
 });
 router.post('/uploadavatar', upload.single('file'), (0,_Middlwares_error_handler__WEBPACK_IMPORTED_MODULE_4__.asyncHandler)( /*#__PURE__*/function () {
   var _ref7 = _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_0___default()( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default().mark(function _callee7(req, res) {
-    var studentId, result;
+    var auth0Id, result, updatedClassroom;
     return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default().wrap(function _callee7$(_context7) {
       while (1) {
         switch (_context7.prev = _context7.next) {
           case 0:
-            studentId = req.body.studentId;
+            auth0Id = req.body.auth0Id;
 
             if (!req.file) {
-              _context7.next = 5;
+              _context7.next = 9;
               break;
             }
 
             _context7.next = 4;
             return (0,_application_utils_cloudinary__WEBPACK_IMPORTED_MODULE_7__.uploadStream)(req.file.buffer, {
-              folder: 'termine',
-              public_id: studentId
+              folder: 'termine'
             });
 
           case 4:
             result = _context7.sent;
+            _context7.next = 7;
+            return _controller__WEBPACK_IMPORTED_MODULE_3__["default"].insertImageIntoDatabase(auth0Id, result.secure_url);
 
-          case 5:
+          case 7:
+            updatedClassroom = _context7.sent;
+            req.io.emit('classroomUpdated', updatedClassroom);
+
+          case 9:
+            res.send(200);
+
+          case 10:
           case "end":
             return _context7.stop();
         }
@@ -1784,6 +1792,41 @@ router.post('/setAvatarType', (0,_Middlwares_error_handler__WEBPACK_IMPORTED_MOD
 
   return function (_x15, _x16) {
     return _ref8.apply(this, arguments);
+  };
+}()));
+router.post('/saveStudentName', (0,_Middlwares_error_handler__WEBPACK_IMPORTED_MODULE_4__.asyncHandler)( /*#__PURE__*/function () {
+  var _ref9 = _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_0___default()( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default().mark(function _callee9(req, res) {
+    var _req$body4, id, studentName, cod, teacherId, updatedClassroom;
+
+    return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default().wrap(function _callee9$(_context9) {
+      while (1) {
+        switch (_context9.prev = _context9.next) {
+          case 0:
+            _req$body4 = req.body, id = _req$body4.id, studentName = _req$body4.studentName, cod = _req$body4.cod, teacherId = _req$body4.teacherId;
+            console.log('ooooooooooooooooooooooooooo');
+            _context9.next = 4;
+            return _controller__WEBPACK_IMPORTED_MODULE_3__["default"].saveStudentName({
+              id: id,
+              studentName: studentName,
+              cod: cod,
+              teacherId: teacherId
+            });
+
+          case 4:
+            updatedClassroom = _context9.sent;
+            req.io.emit('classroomUpdated', updatedClassroom);
+            res.send(200);
+
+          case 7:
+          case "end":
+            return _context9.stop();
+        }
+      }
+    }, _callee9);
+  }));
+
+  return function (_x17, _x18) {
+    return _ref9.apply(this, arguments);
   };
 }()));
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (function (app) {
@@ -2206,11 +2249,20 @@ var Controller = {
           switch (_context7.prev = _context7.next) {
             case 0:
               _context7.next = 2;
-              return _model__WEBPACK_IMPORTED_MODULE_3__["default"].updateById(id, {
+              return _model__WEBPACK_IMPORTED_MODULE_3__["default"].update({
+                auth0Id: id
+              }, {
                 uploadedPicture: imageName
               });
 
             case 2:
+              _context7.next = 4;
+              return _classroom_controller__WEBPACK_IMPORTED_MODULE_6__["default"].getClassroomWithStudents(data.cod, data.teacherId);
+
+            case 4:
+              return _context7.abrupt("return", _context7.sent);
+
+            case 5:
             case "end":
               return _context7.stop();
           }
@@ -2244,6 +2296,34 @@ var Controller = {
           }
         }
       }, _callee8);
+    }))();
+  },
+  saveStudentName: function saveStudentName(data) {
+    return _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_1___default()( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2___default().mark(function _callee9() {
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2___default().wrap(function _callee9$(_context9) {
+        while (1) {
+          switch (_context9.prev = _context9.next) {
+            case 0:
+              _context9.next = 2;
+              return _model__WEBPACK_IMPORTED_MODULE_3__["default"].update({
+                id: data.id
+              }, {
+                name: data.studentName
+              });
+
+            case 2:
+              _context9.next = 4;
+              return _classroom_controller__WEBPACK_IMPORTED_MODULE_6__["default"].getClassroomWithStudents(data.cod, data.teacherId);
+
+            case 4:
+              return _context9.abrupt("return", _context9.sent);
+
+            case 5:
+            case "end":
+              return _context9.stop();
+          }
+        }
+      }, _callee9);
     }))();
   }
 };
@@ -2310,10 +2390,13 @@ var Student = _Application_database__WEBPACK_IMPORTED_MODULE_0__.db.define('stud
     unique: true
   },
   picture: _Application_database__WEBPACK_IMPORTED_MODULE_0__.DataTypes.STRING,
-  uploadedPicture: _Application_database__WEBPACK_IMPORTED_MODULE_0__.DataTypes.STRING,
+  uploadedPicture: {
+    type: _Application_database__WEBPACK_IMPORTED_MODULE_0__.DataTypes.STRING,
+    defaultValue: 'https://pablomonteserin.com/termine/defaultAvatar.png'
+  },
   avatarType: {
     type: _Application_database__WEBPACK_IMPORTED_MODULE_0__.DataTypes.SMALLINT,
-    defaultValue: 0
+    defaultValue: 1
   },
   name: _Application_database__WEBPACK_IMPORTED_MODULE_0__.DataTypes.STRING
 });

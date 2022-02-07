@@ -74,17 +74,27 @@ const upload = multer({storage})
 
 
 router.post('/uploadavatar', upload.single('file'), asyncHandler(async (req, res) => {
-    const studentId = req.body.studentId;
+    const auth0Id = req.body.auth0Id;
 
     if (req.file) {
-        const result = await uploadStream(req.file.buffer, {folder:'termine', public_id:studentId})
-       // console.log(result)
+        const result = await uploadStream(req.file.buffer, {folder:'termine'});
+        const updatedClassroom = await Controller.insertImageIntoDatabase(auth0Id, result.secure_url);
+        req.io.emit('classroomUpdated', updatedClassroom);
     }
+    res.send(200);
 }));
 
 router.post('/setAvatarType', asyncHandler(async (req, res) => {
     const {body: {avatarType, studentId, cod, teacherId}} = req;
     const updatedClassroom = await Controller.setAvatarType({avatarType,studentId, cod, teacherId});
+    req.io.emit('classroomUpdated', updatedClassroom);
+    res.send(200);
+}));
+
+router.post('/saveStudentName', asyncHandler(async (req, res) => {
+    const {body: {id, studentName, cod, teacherId}} = req;
+    console.log('ooooooooooooooooooooooooooo')
+    const updatedClassroom = await Controller.saveStudentName({id,studentName, cod, teacherId});
     req.io.emit('classroomUpdated', updatedClassroom);
     res.send(200);
 }));

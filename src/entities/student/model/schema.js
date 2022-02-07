@@ -7,10 +7,13 @@ const Student = db.define('student', {
         unique: true
     },
     picture: DataTypes.STRING,
-    uploadedPicture: DataTypes.STRING,
+    uploadedPicture:{
+        type:DataTypes.STRING,
+        defaultValue: 'https://pablomonteserin.com/termine/defaultAvatar.png'
+    },
     avatarType:{
         type:DataTypes.SMALLINT,
-        defaultValue: 0
+        defaultValue: 1
     },
     name: DataTypes.STRING,
 });
