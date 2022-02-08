@@ -15,7 +15,11 @@ const Student = db.define('student', {
         type:DataTypes.SMALLINT,
         defaultValue: 1
     },
-    name: DataTypes.STRING,
+    name: {
+        type:DataTypes.STRING,
+        defaultValue: ''
+    },
+    email:DataTypes.STRING
 });
 
 Student.associate = ({classroom}) => {

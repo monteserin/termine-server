@@ -12,16 +12,15 @@ import restrictedAccess from "@Middlwares/restricted-access";
 const router = express.Router();
 
 router.post("/", asyncHandler(async (req, res) => {
-    const {body: {teacherId, auth0Id, cod, picture, name}} = req;
+    const {body: {teacherId, mail, cod, picture, name}} = req;
     const data = await Controller.getStudentClassroomAndSuscribeToItIfIsNotSuscribed({
         teacherId,
-        auth0Id,
+        mail,
         cod,
         picture,
         name
     })
 
-    console.log(data)
     res.send(data);
 }));
 
@@ -93,7 +92,6 @@ router.post('/setAvatarType', asyncHandler(async (req, res) => {
 
 router.post('/saveStudentName', asyncHandler(async (req, res) => {
     const {body: {id, studentName, cod, teacherId}} = req;
-    console.log('ooooooooooooooooooooooooooo')
     const updatedClassroom = await Controller.saveStudentName({id,studentName, cod, teacherId});
     req.io.emit('classroomUpdated', updatedClassroom);
     res.send(200);

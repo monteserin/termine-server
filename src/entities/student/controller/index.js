@@ -50,17 +50,20 @@ const Controller = {
 
     async getStudentClassroomAndSuscribeToItIfIsNotSuscribed(msg) {
         const [classroom] = await ClassroomModel.get({teacherId: msg.teacherId, cod: msg.cod});
+        console.log('5555555555555555', classroom, msg.teacherId, msg.cod)
         if (classroom) {
-
-            const [student] = await Model.findOrCreate({auth0Id: msg.auth0Id}, {
-                auth0Id: msg.auth0Id,
+console.log('rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr')
+           const [student] = await Model.findOrCreate({email: msg.mail}, {
                 picture: msg.picture,
                 name: msg.name
             });
+
             await ClassroomStudentModel.findOrCreate({studentId: student.id, classroomId: classroom.id}, {
                 studentId: student.id,
                 classroomId: classroom.id
             });
+
+
             return classroom;
         } else {
             return null;

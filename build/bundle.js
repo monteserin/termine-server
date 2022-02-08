@@ -474,8 +474,6 @@ var GenericModel = function GenericModel(Model) {
       });
     },
     deleteByConditions: function deleteByConditions(conditions) {
-      console.log('deleteByConditions');
-      console.log(conditions);
       return Model.destroy({
         where: conditions
       });
@@ -814,39 +812,46 @@ var AuthService = function AuthService() {
   return {
     signIn: function signIn(providerToken, isTeacher) {
       return _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_0___default()( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default().mark(function _callee() {
-        var _yield$verifyAuthToke, id, email_verified, given_name, picture, Model, user;
+        var _yield$verifyAuthToke, id, email_verified, given_name, picture, email, rqr, Model, user;
 
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default().wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                _context.next = 2;
+                console.log('1111111111111111111111111111111');
+                _context.next = 3;
                 return (0,_auth0__WEBPACK_IMPORTED_MODULE_2__.verifyAuthToken)(providerToken);
 
-              case 2:
+              case 3:
                 _yield$verifyAuthToke = _context.sent;
                 id = _yield$verifyAuthToke.id;
                 email_verified = _yield$verifyAuthToke.email_verified;
                 given_name = _yield$verifyAuthToke.given_name;
                 picture = _yield$verifyAuthToke.picture;
+                email = _yield$verifyAuthToke.email;
+                _context.next = 11;
+                return (0,_auth0__WEBPACK_IMPORTED_MODULE_2__.verifyAuthToken)(providerToken);
+
+              case 11:
+                rqr = _context.sent;
                 Model = isTeacher ? _teacher_model__WEBPACK_IMPORTED_MODULE_4__["default"] : _student_model__WEBPACK_IMPORTED_MODULE_3__["default"];
-                _context.next = 10;
+                _context.next = 15;
                 return Model.findOrCreate({
-                  auth0Id: id
+                  email: email
                 }, {
                   auth0Id: id,
                   name: given_name,
                   picture: picture
                 });
 
-              case 10:
+              case 15:
                 user = _context.sent;
                 return _context.abrupt("return", {
                   user: user,
                   verified: email_verified
                 });
 
-              case 12:
+              case 17:
               case "end":
                 return _context.stop();
             }
@@ -1530,17 +1535,17 @@ __webpack_require__.r(__webpack_exports__);
 var router = express__WEBPACK_IMPORTED_MODULE_2___default().Router();
 router.post("/", (0,_Middlwares_error_handler__WEBPACK_IMPORTED_MODULE_4__.asyncHandler)( /*#__PURE__*/function () {
   var _ref = _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_0___default()( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default().mark(function _callee(req, res) {
-    var _req$body, teacherId, auth0Id, cod, picture, name, data;
+    var _req$body, teacherId, mail, cod, picture, name, data;
 
     return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default().wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
-            _req$body = req.body, teacherId = _req$body.teacherId, auth0Id = _req$body.auth0Id, cod = _req$body.cod, picture = _req$body.picture, name = _req$body.name;
+            _req$body = req.body, teacherId = _req$body.teacherId, mail = _req$body.mail, cod = _req$body.cod, picture = _req$body.picture, name = _req$body.name;
             _context.next = 3;
             return _controller__WEBPACK_IMPORTED_MODULE_3__["default"].getStudentClassroomAndSuscribeToItIfIsNotSuscribed({
               teacherId: teacherId,
-              auth0Id: auth0Id,
+              mail: mail,
               cod: cod,
               picture: picture,
               name: name
@@ -1548,10 +1553,9 @@ router.post("/", (0,_Middlwares_error_handler__WEBPACK_IMPORTED_MODULE_4__.async
 
           case 3:
             data = _context.sent;
-            console.log(data);
             res.send(data);
 
-          case 6:
+          case 5:
           case "end":
             return _context.stop();
         }
@@ -1803,8 +1807,7 @@ router.post('/saveStudentName', (0,_Middlwares_error_handler__WEBPACK_IMPORTED_M
         switch (_context9.prev = _context9.next) {
           case 0:
             _req$body4 = req.body, id = _req$body4.id, studentName = _req$body4.studentName, cod = _req$body4.cod, teacherId = _req$body4.teacherId;
-            console.log('ooooooooooooooooooooooooooo');
-            _context9.next = 4;
+            _context9.next = 3;
             return _controller__WEBPACK_IMPORTED_MODULE_3__["default"].saveStudentName({
               id: id,
               studentName: studentName,
@@ -1812,12 +1815,12 @@ router.post('/saveStudentName', (0,_Middlwares_error_handler__WEBPACK_IMPORTED_M
               teacherId: teacherId
             });
 
-          case 4:
+          case 3:
             updatedClassroom = _context9.sent;
             req.io.emit('classroomUpdated', updatedClassroom);
             res.send(200);
 
-          case 7:
+          case 6:
           case "end":
             return _context9.stop();
         }
@@ -2160,26 +2163,27 @@ var Controller = {
               _yield$ClassroomModel7 = _context5.sent;
               _yield$ClassroomModel8 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_0___default()(_yield$ClassroomModel7, 1);
               classroom = _yield$ClassroomModel8[0];
+              console.log('5555555555555555', classroom, msg.teacherId, msg.cod);
 
               if (!classroom) {
-                _context5.next = 16;
+                _context5.next = 18;
                 break;
               }
 
-              _context5.next = 8;
+              console.log('rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr');
+              _context5.next = 10;
               return _model__WEBPACK_IMPORTED_MODULE_3__["default"].findOrCreate({
-                auth0Id: msg.auth0Id
+                email: msg.mail
               }, {
-                auth0Id: msg.auth0Id,
                 picture: msg.picture,
                 name: msg.name
               });
 
-            case 8:
+            case 10:
               _yield$Model$findOrCr = _context5.sent;
               _yield$Model$findOrCr2 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_0___default()(_yield$Model$findOrCr, 1);
               student = _yield$Model$findOrCr2[0];
-              _context5.next = 13;
+              _context5.next = 15;
               return _classroom_student_model__WEBPACK_IMPORTED_MODULE_5__["default"].findOrCreate({
                 studentId: student.id,
                 classroomId: classroom.id
@@ -2188,13 +2192,13 @@ var Controller = {
                 classroomId: classroom.id
               });
 
-            case 13:
+            case 15:
               return _context5.abrupt("return", classroom);
 
-            case 16:
+            case 18:
               return _context5.abrupt("return", null);
 
-            case 17:
+            case 19:
             case "end":
               return _context5.stop();
           }
@@ -2398,7 +2402,11 @@ var Student = _Application_database__WEBPACK_IMPORTED_MODULE_0__.db.define('stud
     type: _Application_database__WEBPACK_IMPORTED_MODULE_0__.DataTypes.SMALLINT,
     defaultValue: 1
   },
-  name: _Application_database__WEBPACK_IMPORTED_MODULE_0__.DataTypes.STRING
+  name: {
+    type: _Application_database__WEBPACK_IMPORTED_MODULE_0__.DataTypes.STRING,
+    defaultValue: ''
+  },
+  email: _Application_database__WEBPACK_IMPORTED_MODULE_0__.DataTypes.STRING
 });
 
 Student.associate = function (_ref) {
@@ -2646,7 +2654,8 @@ var _require = __webpack_require__(/*! sequelize */ "sequelize"),
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_Application_database__WEBPACK_IMPORTED_MODULE_0__.db.define('teacher', {
   auth0Id: DataTypes.STRING,
-  teacherId: DataTypes.STRING
+  teacherId: DataTypes.STRING,
+  email: DataTypes.STRING
 }));
 
 /***/ }),
