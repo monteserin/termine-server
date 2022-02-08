@@ -2124,20 +2124,21 @@ var Controller = {
         while (1) {
           switch (_context4.prev = _context4.next) {
             case 0:
-              _context4.next = 2;
+              console.log('lllllllllllllllllllllllll', studentId, classroomId, cod, teacherId);
+              _context4.next = 3;
               return _classroom_student_model__WEBPACK_IMPORTED_MODULE_5__["default"].deleteByConditions({
                 studentId: studentId,
                 classroomId: classroomId
               });
 
-            case 2:
-              _context4.next = 4;
+            case 3:
+              _context4.next = 5;
               return _classroom_controller__WEBPACK_IMPORTED_MODULE_6__["default"].getClassroomWithStudents(cod, teacherId);
 
-            case 4:
+            case 5:
               return _context4.abrupt("return", _context4.sent);
 
-            case 5:
+            case 6:
             case "end":
               return _context4.stop();
           }
@@ -2163,15 +2164,13 @@ var Controller = {
               _yield$ClassroomModel7 = _context5.sent;
               _yield$ClassroomModel8 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_0___default()(_yield$ClassroomModel7, 1);
               classroom = _yield$ClassroomModel8[0];
-              console.log('5555555555555555', classroom, msg.teacherId, msg.cod);
 
               if (!classroom) {
-                _context5.next = 18;
+                _context5.next = 16;
                 break;
               }
 
-              console.log('rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr');
-              _context5.next = 10;
+              _context5.next = 8;
               return _model__WEBPACK_IMPORTED_MODULE_3__["default"].findOrCreate({
                 email: msg.mail
               }, {
@@ -2179,11 +2178,11 @@ var Controller = {
                 name: msg.name
               });
 
-            case 10:
+            case 8:
               _yield$Model$findOrCr = _context5.sent;
               _yield$Model$findOrCr2 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_0___default()(_yield$Model$findOrCr, 1);
               student = _yield$Model$findOrCr2[0];
-              _context5.next = 15;
+              _context5.next = 13;
               return _classroom_student_model__WEBPACK_IMPORTED_MODULE_5__["default"].findOrCreate({
                 studentId: student.id,
                 classroomId: classroom.id
@@ -2192,13 +2191,13 @@ var Controller = {
                 classroomId: classroom.id
               });
 
-            case 15:
+            case 13:
               return _context5.abrupt("return", classroom);
 
-            case 18:
+            case 16:
               return _context5.abrupt("return", null);
 
-            case 19:
+            case 17:
             case "end":
               return _context5.stop();
           }

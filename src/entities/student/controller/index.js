@@ -44,15 +44,14 @@ const Controller = {
     },
 
     async removeStudentFromClassroom(studentId, classroomId, cod, teacherId) {
+        console.log('lllllllllllllllllllllllll', studentId, classroomId, cod, teacherId);
         await ClassroomStudentModel.deleteByConditions({ studentId, classroomId})
         return await ClassroomController.getClassroomWithStudents(cod, teacherId);
     },
 
     async getStudentClassroomAndSuscribeToItIfIsNotSuscribed(msg) {
         const [classroom] = await ClassroomModel.get({teacherId: msg.teacherId, cod: msg.cod});
-        console.log('5555555555555555', classroom, msg.teacherId, msg.cod)
         if (classroom) {
-console.log('rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr')
            const [student] = await Model.findOrCreate({email: msg.mail}, {
                 picture: msg.picture,
                 name: msg.name
