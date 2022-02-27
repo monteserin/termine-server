@@ -46,8 +46,7 @@ const Controller = {
     },
 
     async studentIsBlocked(msg) {
-        const [classroom] = await ClassroomModel.get({ teacherId: msg.teacherId, cod: msg.cod });
-        const conditions = { classroomId: classroom.dataValues.id, studentId: msg.studentId };
+        const conditions = { id: msg.studentId };
         const data = { isBlocked: msg.isBlocked };
         await Model.update(conditions, data);
         return await ClassroomController.getClassroomWithStudents(msg.cod, msg.teacherId);
