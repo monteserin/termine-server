@@ -1,9 +1,9 @@
 import express from 'express';
 import Controller from "../../controller";
-import {asyncHandler} from "@Middlwares/error-handler";
+import { asyncHandler } from "@Middlwares/error-handler";
 import multer from "multer";
 import path from "path";
-import {uploadStream} from '../../../../application/utils/cloudinary';
+import { uploadStream } from '../../../../application/utils/cloudinary';
 
 // Para operaciones con acceso restringido, introduciremos un segundo parámetro que será la variable restrictedAccess
 import restrictedAccess from "@Middlwares/restricted-access";
@@ -12,7 +12,7 @@ import restrictedAccess from "@Middlwares/restricted-access";
 const router = express.Router();
 
 router.post("/", asyncHandler(async (req, res) => {
-    const {body: {teacherId, mail, cod, picture, name}} = req;
+    const { body: { teacherId, mail, cod, picture, name } } = req;
     const data = await Controller.getStudentClassroomAndSuscribeToItIfIsNotSuscribed({
         teacherId,
         mail,
@@ -25,7 +25,7 @@ router.post("/", asyncHandler(async (req, res) => {
 }));
 
 router.post("/removeFromClassroom", asyncHandler(async (req, res) => {
-    const {body: {studentId, classroomId, cod, teacherId}} = req;
+    const { body: { studentId, classroomId, cod, teacherId } } = req;
     await Controller.removeStudentFromClassroom(studentId, classroomId, cod, teacherId);
     const updatedClassroom = await Controller.studentHasTerminated(req.body);
     req.io.emit('classroomUpdated', updatedClassroom);
@@ -40,12 +40,20 @@ router.post("/hasTerminated", asyncHandler(async (req, res) => {
 
 router.post("/hasDoubts", asyncHandler(async (req, res) => {
     const updatedClassroom = await Controller.studentHasDoubts(req.body);
+    updatedClassroom.dataValues.hasDoubts = req.body.hasDoubts;
     req.io.emit('classroomUpdated', updatedClassroom);
     res.send(200);
 }));
 
 router.post("/isInClassroom", asyncHandler(async (req, res) => {
     const updatedClassroom = await Controller.studentIsInClassroom(req.body);
+    req.io.emit('classroomUpdated', updatedClassroom);
+    res.send(200);
+}));
+
+router.post("/isBlocked", asyncHandler(async (req, res) => {
+    console.log('11111111111111111111111111111111')
+    const updatedClassroom = await Controller.studentIsBlocked(req.body);
     req.io.emit('classroomUpdated', updatedClassroom);
     res.send(200);
 }));
@@ -69,30 +77,40 @@ const storage2 = multer.diskStorage({
 const storage = multer.memoryStorage({
     destination: "./public/uploads/",
 });
-const upload = multer({storage})
+const upload = multer({ storage })
 
 
 router.post('/uploadavatar', upload.single('file'), asyncHandler(async (req, res) => {
     const auth0Id = req.body.auth0Id;
 
     if (req.file) {
-        const result = await uploadStream(req.file.buffer, {folder:'termine'});
+        const result = await uploadStream(req.file.buffer, { folder: 'termine' });
         const updatedClassroom = await Controller.insertImageIntoDatabase(auth0Id, result.secure_url);
         req.io.emit('classroomUpdated', updatedClassroom);
     }
     res.send(200);
 }));
 
+router.post('/monteserinAvatar', asyncHandler(async (req, res) => {
+    const { body: { cod, teacherId, studentId, monteserinAvatarPicture } } = req;
+    const updatedClassroom = await Controller.setMonteserinAvatar({ cod, teacherId, studentId, monteserinAvatarPicture });
+    req.io.emit('classroomUpdated', updatedClassroom);
+    res.send(200);
+}));
+
+
+
+
 router.post('/setAvatarType', asyncHandler(async (req, res) => {
-    const {body: {avatarType, studentId, cod, teacherId}} = req;
-    const updatedClassroom = await Controller.setAvatarType({avatarType,studentId, cod, teacherId});
+    const { body: { avatarType, studentId, cod, teacherId } } = req;
+    const updatedClassroom = await Controller.setAvatarType({ avatarType, studentId, cod, teacherId });
     req.io.emit('classroomUpdated', updatedClassroom);
     res.send(200);
 }));
 
 router.post('/saveStudentName', asyncHandler(async (req, res) => {
-    const {body: {id, studentName, cod, teacherId}} = req;
-    const updatedClassroom = await Controller.saveStudentName({id,studentName, cod, teacherId});
+    const { body: { id, studentName, cod, teacherId } } = req;
+    const updatedClassroom = await Controller.saveStudentName({ id, studentName, cod, teacherId });
     req.io.emit('classroomUpdated', updatedClassroom);
     res.send(200);
 }));

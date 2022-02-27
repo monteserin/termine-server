@@ -1,4 +1,4 @@
-import {db, DataTypes} from '@Application/database';
+import { db, DataTypes } from '@Application/database';
 import ClassroomStudent from "../../classroom-student/model/schema";
 
 const Student = db.define('student', {
@@ -7,23 +7,28 @@ const Student = db.define('student', {
         unique: true
     },
     picture: DataTypes.STRING,
-    uploadedPicture:{
-        type:DataTypes.STRING,
+    uploadedPicture: {
+        type: DataTypes.STRING,
         defaultValue: 'https://pablomonteserin.com/termine/defaultAvatar.png'
     },
-    avatarType:{
-        type:DataTypes.SMALLINT,
+    monteserinAvatarPicture: DataTypes.STRING,
+    avatarType: {
+        type: DataTypes.SMALLINT,
         defaultValue: 1
     },
     name: {
-        type:DataTypes.STRING,
+        type: DataTypes.STRING,
         defaultValue: ''
     },
-    email:DataTypes.STRING
+    email: DataTypes.STRING,
+    isBlocked: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
+    },
 });
 
-Student.associate = ({classroom}) => {
-    Student.belongsToMany(classroom, {through: ClassroomStudent, onDelete: 'cascade'});
+Student.associate = ({ classroom }) => {
+    Student.belongsToMany(classroom, { through: ClassroomStudent, onDelete: 'cascade' });
 };
 
 export default Student;

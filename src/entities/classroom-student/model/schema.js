@@ -1,4 +1,4 @@
-import {db, DataTypes} from '@Application/database';
+import { db, DataTypes } from '@Application/database';
 
 const ClassroomStudent = db.define('classroomstudent', {
     id: {
@@ -20,14 +20,14 @@ const ClassroomStudent = db.define('classroomstudent', {
         defaultValue: false
     },
     doIt: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: false
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
     },
-    doubtTime: DataTypes.TIME
+    doubtTime: DataTypes.INTEGER
 
 });
 
-ClassroomStudent.associate = ({classroom, student}) => {
+ClassroomStudent.associate = ({ classroom, student }) => {
     ClassroomStudent.belongsTo(classroom, { foreignKey: { allowNull: false } });
     ClassroomStudent.belongsTo(student, { foreignKey: { allowNull: false } });
 };

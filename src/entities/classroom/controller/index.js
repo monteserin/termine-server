@@ -21,26 +21,26 @@ const Controller = {
         return Model.getMostRecentCod(teacherId);
     },
     async getClassroomWithStudents(cod, teacherId) {
-        const classroom = await Model.getClassroomWithStudents({cod, teacherId});
+        const classroom = await Model.getClassroomWithStudents({ cod, teacherId });
         return classroom;
     },
     async createIfNotExistsAndGetClassroom(teacherId, cod) {
         const data = await this.getClassroomWithStudents(teacherId, cod);
         if (!data) {
-            await Model.create({teacherId, cod});
+            await Model.create({ teacherId, cod });
             return await this.getClassroomWithStudents(teacherId, cod);
         }
         return data;
     },
     async updateTxt(cod, teacherId, txt) {
-        const [classroom] = await Model.get({cod, teacherId});
-        await Model.updateById(classroom.id, {txt});
-        return await Model.getClassroomWithStudents({cod, teacherId});
+        const [classroom] = await Model.get({ cod, teacherId });
+        await Model.updateById(classroom.id, { txt });
+        return await Model.getClassroomWithStudents({ cod, teacherId });
     },
     async newExercise(cod, teacherId) {
-        const [classroom] = await Model.get({cod, teacherId});
-        await ClassroomStudent.update({classroomId: classroom.dataValues.id}, {hasTerminated: false});
-        return await Model.getClassroomWithStudents({cod, teacherId});
+        const [classroom] = await Model.get({ cod, teacherId });
+        await ClassroomStudent.update({ classroomId: classroom.dataValues.id }, { hasTerminated: false, doIt: false, hasDoubts: false });
+        return await Model.getClassroomWithStudents({ cod, teacherId });
     },
 }
 

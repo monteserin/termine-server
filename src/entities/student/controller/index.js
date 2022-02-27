@@ -20,44 +20,53 @@ const Controller = {
         return Model.deleteById(id);
     },
     async studentHasTerminated(msg) {
-        const [classroom] = await ClassroomModel.get({teacherId: msg.teacherId, cod: msg.cod});
-        const conditions = {classroomId: classroom.dataValues.id, studentId: msg.studentId};
-        const data = {hasTerminated: msg.hasTerminated};
+        const [classroom] = await ClassroomModel.get({ teacherId: msg.teacherId, cod: msg.cod });
+        const conditions = { classroomId: classroom.dataValues.id, studentId: msg.studentId };
+        const data = { hasTerminated: msg.hasTerminated };
         await ClassroomStudentModel.update(conditions, data);
         return await ClassroomController.getClassroomWithStudents(msg.cod, msg.teacherId);
-
     },
+
     async studentHasDoubts(msg) {
-        const [classroom] = await ClassroomModel.get({teacherId: msg.teacherId, cod: msg.cod});
-        const conditions = {classroomId: classroom.dataValues.id, studentId: msg.studentId};
-        const data = {hasDoubts: msg.hasDoubts};
+        const [classroom] = await ClassroomModel.get({ teacherId: msg.teacherId, cod: msg.cod });
+        const conditions = { classroomId: classroom.dataValues.id, studentId: msg.studentId };
+        const time = new Date().getTime();
+        console.log(time)
+        const data = { hasDoubts: msg.hasDoubts, doubtTime: time };
         await ClassroomStudentModel.update(conditions, data);
         return await ClassroomController.getClassroomWithStudents(msg.cod, msg.teacherId);
     },
 
     async studentIsInClassroom(msg) {
-        const [classroom] = await ClassroomModel.get({teacherId: msg.teacherId, cod: msg.cod});
-        const conditions = {classroomId: classroom.dataValues.id, studentId: msg.studentId};
-        const data = {isInClassroom: msg.isInClassroom};
+        const [classroom] = await ClassroomModel.get({ teacherId: msg.teacherId, cod: msg.cod });
+        const conditions = { classroomId: classroom.dataValues.id, studentId: msg.studentId };
+        const data = { isInClassroom: msg.isInClassroom };
         await ClassroomStudentModel.update(conditions, data);
         return await ClassroomController.getClassroomWithStudents(msg.cod, msg.teacherId);
     },
 
+    async studentIsBlocked(msg) {
+        const [classroom] = await ClassroomModel.get({ teacherId: msg.teacherId, cod: msg.cod });
+        const conditions = { classroomId: classroom.dataValues.id, studentId: msg.studentId };
+        const data = { isBlocked: msg.isBlocked };
+        await Model.update(conditions, data);
+        return await ClassroomController.getClassroomWithStudents(msg.cod, msg.teacherId);
+    },
+
     async removeStudentFromClassroom(studentId, classroomId, cod, teacherId) {
-        console.log('lllllllllllllllllllllllll', studentId, classroomId, cod, teacherId);
-        await ClassroomStudentModel.deleteByConditions({ studentId, classroomId})
+        await ClassroomStudentModel.deleteByConditions({ studentId, classroomId })
         return await ClassroomController.getClassroomWithStudents(cod, teacherId);
     },
 
     async getStudentClassroomAndSuscribeToItIfIsNotSuscribed(msg) {
-        const [classroom] = await ClassroomModel.get({teacherId: msg.teacherId, cod: msg.cod});
+        const [classroom] = await ClassroomModel.get({ teacherId: msg.teacherId, cod: msg.cod });
         if (classroom) {
-           const [student] = await Model.findOrCreate({email: msg.mail}, {
+            const [student] = await Model.findOrCreate({ email: msg.mail }, {
                 picture: msg.picture,
                 name: msg.name
             });
 
-            await ClassroomStudentModel.findOrCreate({studentId: student.id, classroomId: classroom.id}, {
+            await ClassroomStudentModel.findOrCreate({ studentId: student.id, classroomId: classroom.id }, {
                 studentId: student.id,
                 classroomId: classroom.id
             });
@@ -70,23 +79,29 @@ const Controller = {
     },
 
     async doIt(data) {
-        const [classroom] = await ClassroomModel.get({cod: data.cod, teacherId: data.teacherId});
-        await ClassroomStudentModel.update({classroomId: classroom.id}, {doIt: data.doIt});
+        const [classroom] = await ClassroomModel.get({ cod: data.cod, teacherId: data.teacherId });
+        await ClassroomStudentModel.update({ classroomId: classroom.id, studentId: data.studentId }, { doIt: data.doIt });
         return await ClassroomController.getClassroomWithStudents(data.cod, data.teacherId);
     },
-    async insertImageIntoDatabase(id, imageName){
-        await Model.update({auth0Id: id}, {uploadedPicture:imageName});
+    async insertImageIntoDatabase(id, imageName) {
+        await Model.update({ auth0Id: id }, { uploadedPicture: imageName });
         return await ClassroomController.getClassroomWithStudents(data.cod, data.teacherId);
     },
 
+    async setMonteserinAvatar(data) {
+        await Model.update({ id: data.studentId }, { monteserinAvatarPicture: data.monteserinAvatarPicture });
+        return await ClassroomController.getClassroomWithStudents(data.cod, data.teacherId);
+    },
+
+
     async setAvatarType(data) {
-        await Model.update({id: data.studentId}, {avatarType: data.avatarType});
+        await Model.update({ id: data.studentId }, { avatarType: data.avatarType });
         return await ClassroomController.getClassroomWithStudents(data.cod, data.teacherId);
     },
 
 
     async saveStudentName(data) {
-        await Model.update({id: data.id}, {name: data.studentName});
+        await Model.update({ id: data.id }, { name: data.studentName });
         return await ClassroomController.getClassroomWithStudents(data.cod, data.teacherId);
     },
 
