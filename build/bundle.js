@@ -743,18 +743,7 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 
 
 
-var Model = _objectSpread(_objectSpread({}, (0,_Application_repository_generic_model__WEBPACK_IMPORTED_MODULE_2__["default"])(_schema__WEBPACK_IMPORTED_MODULE_1__["default"])), {}, {
-  isUserInClassroom: function isUserInClassroom(auth0Id, teacherId, cod, isStudent) {
-    return _schema__WEBPACK_IMPORTED_MODULE_1__["default"].findOne({
-      where: {
-        auth0Id: auth0Id,
-        teacherId: teacherId,
-        cod: cod,
-        student: isStudent
-      }
-    });
-  }
-});
+var Model = _objectSpread({}, (0,_Application_repository_generic_model__WEBPACK_IMPORTED_MODULE_2__["default"])(_schema__WEBPACK_IMPORTED_MODULE_1__["default"]));
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Model);
 
@@ -1689,16 +1678,15 @@ router.post("/isBlocked", (0,_Middlwares_error_handler__WEBPACK_IMPORTED_MODULE_
       while (1) {
         switch (_context6.prev = _context6.next) {
           case 0:
-            console.log('11111111111111111111111111111111');
-            _context6.next = 3;
+            _context6.next = 2;
             return _controller__WEBPACK_IMPORTED_MODULE_3__["default"].studentIsBlocked(req.body);
 
-          case 3:
+          case 2:
             updatedClassroom = _context6.sent;
             req.io.emit('classroomUpdated', updatedClassroom);
             res.send(200);
 
-          case 6:
+          case 5:
           case "end":
             return _context6.stop();
         }
@@ -2187,40 +2175,28 @@ var Controller = {
   },
   studentIsBlocked: function studentIsBlocked(msg) {
     return _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_1___default()( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2___default().mark(function _callee4() {
-      var _yield$ClassroomModel7, _yield$ClassroomModel8, classroom, conditions, data;
-
+      var conditions, data;
       return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2___default().wrap(function _callee4$(_context4) {
         while (1) {
           switch (_context4.prev = _context4.next) {
             case 0:
-              _context4.next = 2;
-              return _classroom_model__WEBPACK_IMPORTED_MODULE_4__["default"].get({
-                teacherId: msg.teacherId,
-                cod: msg.cod
-              });
-
-            case 2:
-              _yield$ClassroomModel7 = _context4.sent;
-              _yield$ClassroomModel8 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_0___default()(_yield$ClassroomModel7, 1);
-              classroom = _yield$ClassroomModel8[0];
               conditions = {
-                classroomId: classroom.dataValues.id,
-                studentId: msg.studentId
+                id: msg.studentId
               };
               data = {
                 isBlocked: msg.isBlocked
               };
-              _context4.next = 9;
+              _context4.next = 4;
               return _model__WEBPACK_IMPORTED_MODULE_3__["default"].update(conditions, data);
 
-            case 9:
-              _context4.next = 11;
+            case 4:
+              _context4.next = 6;
               return _classroom_controller__WEBPACK_IMPORTED_MODULE_6__["default"].getClassroomWithStudents(msg.cod, msg.teacherId);
 
-            case 11:
+            case 6:
               return _context4.abrupt("return", _context4.sent);
 
-            case 12:
+            case 7:
             case "end":
               return _context4.stop();
           }
@@ -2257,7 +2233,7 @@ var Controller = {
   },
   getStudentClassroomAndSuscribeToItIfIsNotSuscribed: function getStudentClassroomAndSuscribeToItIfIsNotSuscribed(msg) {
     return _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_1___default()( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2___default().mark(function _callee6() {
-      var _yield$ClassroomModel9, _yield$ClassroomModel10, classroom, _yield$Model$findOrCr, _yield$Model$findOrCr2, student;
+      var _yield$ClassroomModel7, _yield$ClassroomModel8, classroom, _yield$Model$findOrCr, _yield$Model$findOrCr2, student;
 
       return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2___default().wrap(function _callee6$(_context6) {
         while (1) {
@@ -2270,9 +2246,9 @@ var Controller = {
               });
 
             case 2:
-              _yield$ClassroomModel9 = _context6.sent;
-              _yield$ClassroomModel10 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_0___default()(_yield$ClassroomModel9, 1);
-              classroom = _yield$ClassroomModel10[0];
+              _yield$ClassroomModel7 = _context6.sent;
+              _yield$ClassroomModel8 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_0___default()(_yield$ClassroomModel7, 1);
+              classroom = _yield$ClassroomModel8[0];
 
               if (!classroom) {
                 _context6.next = 16;
@@ -2316,7 +2292,7 @@ var Controller = {
   },
   doIt: function doIt(data) {
     return _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_1___default()( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2___default().mark(function _callee7() {
-      var _yield$ClassroomModel11, _yield$ClassroomModel12, classroom;
+      var _yield$ClassroomModel9, _yield$ClassroomModel10, classroom;
 
       return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2___default().wrap(function _callee7$(_context7) {
         while (1) {
@@ -2329,9 +2305,9 @@ var Controller = {
               });
 
             case 2:
-              _yield$ClassroomModel11 = _context7.sent;
-              _yield$ClassroomModel12 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_0___default()(_yield$ClassroomModel11, 1);
-              classroom = _yield$ClassroomModel12[0];
+              _yield$ClassroomModel9 = _context7.sent;
+              _yield$ClassroomModel10 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_0___default()(_yield$ClassroomModel9, 1);
+              classroom = _yield$ClassroomModel10[0];
               _context7.next = 7;
               return _classroom_student_model__WEBPACK_IMPORTED_MODULE_5__["default"].update({
                 classroomId: classroom.id,
@@ -2495,17 +2471,7 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 
 
 
-var Model = _objectSpread(_objectSpread({}, (0,_Application_repository_generic_model__WEBPACK_IMPORTED_MODULE_2__["default"])(_schema__WEBPACK_IMPORTED_MODULE_1__["default"])), {}, {
-  isUserInClassroom: function isUserInClassroom(auth0Id, teacherId, cod) {
-    return _schema__WEBPACK_IMPORTED_MODULE_1__["default"].findOne({
-      where: {
-        auth0Id: auth0Id,
-        teacherId: teacherId,
-        cod: cod
-      }
-    });
-  }
-});
+var Model = _objectSpread({}, (0,_Application_repository_generic_model__WEBPACK_IMPORTED_MODULE_2__["default"])(_schema__WEBPACK_IMPORTED_MODULE_1__["default"]));
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Model);
 
@@ -2594,13 +2560,13 @@ __webpack_require__.r(__webpack_exports__);
 var router = express__WEBPACK_IMPORTED_MODULE_2___default().Router();
 router.post("/", (0,_Middlwares_error_handler__WEBPACK_IMPORTED_MODULE_5__.asyncHandler)( /*#__PURE__*/function () {
   var _ref = _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_0___default()( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default().mark(function _callee(req, res) {
-    var _req$body, auth0Id, id, teacherId, teacherData;
+    var _req$body, id, teacherId, teacherData;
 
     return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default().wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
-            _req$body = req.body, auth0Id = _req$body.auth0Id, id = _req$body.id, teacherId = _req$body.teacherId; // Compruebo si algún profe tiene ese teacherId
+            _req$body = req.body, id = _req$body.id, teacherId = _req$body.teacherId; // Compruebo si algún profe tiene ese teacherId
 
             _context.next = 3;
             return _controller__WEBPACK_IMPORTED_MODULE_3__["default"].get({
@@ -2762,17 +2728,7 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 
 
 
-var Model = _objectSpread(_objectSpread({}, (0,_Application_repository_generic_model__WEBPACK_IMPORTED_MODULE_2__["default"])(_schema__WEBPACK_IMPORTED_MODULE_1__["default"])), {}, {
-  isUserInClassroom: function isUserInClassroom(auth0Id, teacherId, cod, isStudent) {
-    return _schema__WEBPACK_IMPORTED_MODULE_1__["default"].findOne({
-      where: {
-        auth0Id: auth0Id,
-        teacherId: teacherId,
-        cod: cod
-      }
-    });
-  }
-});
+var Model = _objectSpread({}, (0,_Application_repository_generic_model__WEBPACK_IMPORTED_MODULE_2__["default"])(_schema__WEBPACK_IMPORTED_MODULE_1__["default"]));
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Model);
 

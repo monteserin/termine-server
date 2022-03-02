@@ -52,7 +52,6 @@ router.post("/isInClassroom", asyncHandler(async (req, res) => {
 }));
 
 router.post("/isBlocked", asyncHandler(async (req, res) => {
-    console.log('11111111111111111111111111111111')
     const updatedClassroom = await Controller.studentIsBlocked(req.body);
     req.io.emit('classroomUpdated', updatedClassroom);
     res.send(200);
