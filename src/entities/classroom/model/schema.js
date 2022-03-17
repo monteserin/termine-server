@@ -5,7 +5,7 @@ const Classroom = db.define('classroom', {
     teacherId: DataTypes.STRING,
     cod: DataTypes.STRING,
     txt: {
-        type:DataTypes.STRING,
+        type:DataTypes.TEXT,
         defaultValue:''
     }
 });

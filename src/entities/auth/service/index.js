@@ -6,7 +6,6 @@ import TeacherModel from '../../teacher/model';
 const AuthService = () => ({
     async signIn(providerToken, isTeacher) {
         const { id, email_verified, given_name, picture, email } = await verifyAuthToken(providerToken);
-        const rqr = await verifyAuthToken(providerToken);
         const Model = isTeacher ? TeacherModel : StudentModel
         const user = await Model.findOrCreate({ email }, { auth0Id: id, name: given_name, picture });
         return { user, verified: email_verified };
